@@ -6,10 +6,13 @@ import socket
 import threading
 
 from Utility.Polish_Notation import Polish_Notation_Calculator as Polish_Notation
+from Utility.Hang_Man import Hang_Man_Game as Hang_Man
 
 import sys
 
 sys.path.insert(1, 'PycharmProjects/Python_Utility_Server/Utility/Polish_Notation')
+
+sys.path.insert(1, 'PycharmProjects/Python_Utility_Server/Utility/Hang_Man_Game')
 
 # ****
 # Const
@@ -52,21 +55,41 @@ def handle_client(connection, address):
                 connected = False  # or "break - breaks out of the loop on disconnect request
                 break
 
-            # check_input_validity(connection, msg)  # Check the validity of the msg
+            if '[SUFFIX_CALCULATOR]' in msg:
 
-            print(f"[{address}] has sent {msg}")  # Print the msg and the address it came from
+                msg = msg.replace('[SUFFIX_CALCULATOR]', '')
 
-            user_input = msg  # Name change for consistency in computation module
+                print(f'The current message after .replace = {msg}')
 
-            computation_obj = Polish_Notation.start_computation(user_input)  # Make a new computation object and pass the user_input
+                print(f"[{address}] has sent {msg}")  # Print the msg and the address it came from
 
-            print(computation_obj.global_result)
+                user_input = msg  # Name change for consistency in computation module
 
-            result = str(computation_obj.global_result)  # result pulled from a global var in the computation object and converted to string to allow for encoding
+                calculator_obj = Polish_Notation.start_computation(user_input)  # Make a new computation object and pass the user_input
 
-            print(f'Result in the server is:  {result}')  # Debug print
+                print(calculator_obj.global_result)
 
-            return_msg(connection, result, msg)  # Pass info to the return msg function
+                result = str(calculator_obj.global_result)  # result pulled from a global var in the computation object and converted to string to allow for encoding
+
+                print(f'Result in the server is:  {result}')  # Debug print
+
+                return_msg(connection, result, msg)  # Pass info to the return msg function
+
+            if '[HANGMAN]' in msg:
+
+                hang_man_obj = Hang_Man.HangMan()
+                game_finished = False
+
+                while not game_finished:
+                    game_attempts = hang_man_obj.
+
+
+
+
+
+
+
+
 
     connection.close()  # Close the connection
     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")

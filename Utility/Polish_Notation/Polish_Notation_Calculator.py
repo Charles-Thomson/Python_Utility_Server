@@ -64,14 +64,14 @@ def check_input_validity(user_input):
         # print(f'values = {user_input_values}  operators = {user_input_operators}')
 
         if user_input_values == user_input_operators + 1:
-            # print("Input elements are valid and length is valid")
+            print("Input elements are valid and length is valid")
             pass
         else:
             global_result = INPUT_ERROR_MSG
 
     else:
         global_result = INPUT_ERROR_MSG  # If the input is invalid set the global_result to error
-        # print(f'{global_result} : is the returned error')
+        print(f'{global_result} : is the returned error')
 
 
 # Carry out computation on the stack

@@ -11,8 +11,14 @@ class HangMan:
     def __init__(self):
         global word
         global hidden_word
+        global player_attempts
+        global max_attempts
+        global game_finished
+        game_finished = False
         word = ''
         hidden_word = ''
+        player_attempts = 0
+        max_attempts = 5
 
         generate_word()  # Generate a word
         hide_word(word)  # Hide the generated word using *
@@ -35,20 +41,27 @@ def hide_word(word):
     hidden_word = re.sub('[a-z A-Z]', '*', word)  # regex change each letter to *
 
 
+# Called if the game is finished
+def finished_game():
+    global game_finished
+    game_finished = True
+
+
 # Use a find() in an if followed by a replacement in the hidden_word
 def start_guessing():
     global word
     global hidden_word
+    global max_attempts
+    global player_attempts
     word_found = False
-    max_attempts = 5
-    number_of_attempts = 0
+
     print(f'The maximum number of attempts is {max_attempts}')
     user_guess = input('Start Guessing:   ')
 
     while not word_found:
         guess_location = word.find(user_guess)  # Guess location is if the guess is in the word as location
 
-        if number_of_attempts == max_attempts:  # If the user takes more then the max number of attempts
+        if player_attempts == max_attempts:  # If the user takes more then the max number of attempts
             print(f'[LOSE] You have taken to may attempts. The word was - {word}')
             break
 
@@ -57,9 +70,8 @@ def start_guessing():
             break
 
         elif guess_location == -1:  # If the letter is not in the word
-            number_of_attempts += 1
-            print(f'{user_guess} not in the word. Number of attempts = {number_of_attempts}/{max_attempts}')
-
+            player_attempts += 1
+            print(f'{user_guess} not in the word. Number of attempts = {player_attempts}/{max_attempts}')
 
         else:
             for guess in re.finditer(user_guess, word):   # For each occurrence of the user_guess in the word
@@ -81,6 +93,7 @@ def start_guessing():
 
     elif play_again == "n":
         print('Sore loser')
+        finished_game()
 
 
 if __name__ == '__main__':  # If run as module, start game

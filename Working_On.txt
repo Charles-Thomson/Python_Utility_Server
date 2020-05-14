@@ -1,0 +1,21 @@
+# *************************
+# Currently being worked on
+# *************************
+
+**** Client ****
+
+working on a solution to the sending and receiving of multiple messages as needed by the hang man game
+
+**** Server ****
+
+Finding a way to send messages repeatedly to the game object and sending the result back to the client each time
+
+**** Calculator ****
+
+Not working on currently - functional
+
+**** Hang Man ****
+
+Making some changes to allow it to work with the server.
+may need to break down some of the methods or find a way to pull the info i need to return to the user each time an
+attempt is made.
