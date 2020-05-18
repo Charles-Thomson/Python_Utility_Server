@@ -4,18 +4,34 @@
 
 **** Client ****
 
-working on a solution to the sending and receiving of multiple messages as needed by the hang man game
+working on a solution to receive and parse the data from the hang man game
+
+With server: fix dissconnect and start working on !EXIT from utils
 
 **** Server ****
 
-Finding a way to send messages repeatedly to the game object and sending the result back to the client each time
+Changes to be made for the end of game and then work through some clean up
+
+Look at the calculator creation and see if the methods couldn't be called due to the way the object is created
 
 **** Calculator ****
 
 Not working on currently - functional
 
+
 **** Hang Man ****
 
-Making some changes to allow it to work with the server.
-may need to break down some of the methods or find a way to pull the info i need to return to the user each time an
-attempt is made.
+Changes made to allow for individual attempts to be made
+
+- Guard needs to be made for empty msg sent to game
+
+****BACK LOG****
+
+NEXT: Change function and var names to be more appropriate
+
+1. Exit out of utility on server
+
+2. Fix !DISCONNECT call
+
+3. improve message robustness client -> server ie allow for A-a
+

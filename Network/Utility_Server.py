@@ -20,13 +20,14 @@ sys.path.insert(1, 'PycharmProjects/Python_Utility_Server/Utility/Hang_Man_Game'
 # Header represents the max msg length, can cause issue for long msg if the header value is small
 HEADER = 64  # First msg to server is always 64 - represents the length of the msg about to be received
 PORT = 5060  # Port
+
 # SERVER = "192.168.1.7"  # Server location
 SERVER = socket.gethostbyname(socket.gethostname())  # Get the ip of this device to host the server
 ADDRESS = (SERVER, PORT)  # Address is the server IP and the PORT number being used
 FORMAT = 'utf-8'  # The msg encode as
-DISCONNECT_MSG = "!DISCONNECT"  # For clean disconnection of client
-VALID_OPERATORS = " x-/+"  # Valid operators
 
+DISCONNECT_MSG = "!DISCONNECT"  # For clean disconnection of client
+EXIT_MSG = "!EXIT"  # Exit out of current utility
 
 # Create the server socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -75,20 +76,41 @@ def handle_client(connection, address):
 
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
-            if '[HANGMAN]' in msg:
+            if '[HANG_MAN_CREATION]' in msg:
+                print("[CREATION] Creating game object:  Hang Man")
+                hang_man_obj = Hang_Man
+                hang_man_obj.HangMan()
+                hidden_word = hang_man_obj.hidden_word
+                max_attempts = hang_man_obj.max_attempts
 
-                hang_man_obj = Hang_Man.HangMan()
-                game_finished = False
+                result = hidden_word + "//" + str(max_attempts)
+                return_msg(connection, result, msg)  # Pass info to the return msg function
 
-                while not game_finished:
-                    game_attempts = hang_man_obj.
+            if '[HANG_MAN]' in msg:
 
+                msg = msg.replace('[HANG_MAN]', '')
+                word = hang_man_obj.word
+                hidden_word = hang_man_obj.hidden_word
+                max_attempts = hang_man_obj.max_attempts
 
+                print(f'[SERVER] The word is: {word}  The hidden word is: {hidden_word}  \nMax guesses is {max_attempts}')
 
+                game_finished = hang_man_obj.game_finished
+                user_guess = msg
 
+                hang_man_obj.make_guess(user_guess)
 
+                # Print block for the game status at each stage
 
+                word = hang_man_obj.word
+                hidden_word = hang_man_obj.hidden_word
+                player_attempts = hang_man_obj.player_attempts
+                game_finished = hang_man_obj.game_finished
 
+                print(f'\n[GAME STATUS - SERVER] \nword: {word} \nhidden word: {hidden_word} \nPlayer attempts: {[player_attempts]} \nGame Finished: {game_finished}')
+
+                result = hidden_word + "//" + str(player_attempts) + "//" + str(game_finished)
+                return_msg(connection, result, msg)  # Pass info to the return msg function
 
 
     connection.close()  # Close the connection

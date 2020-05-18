@@ -29,7 +29,7 @@ AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man']
 
 # Can change to check if the incoming msg is in a list of known error messages
 # Send msg
-def send(msg):
+def send(msg=''):
     global connected
     connected = True
     print("[WELCOME]  Welcome to the Python Utility Server ")
@@ -48,7 +48,7 @@ def send(msg):
 
         if 'Hang Man' in utility_selection:
             print("Hang Man chosen")
-            message = '[HANG_MAN]'
+            message = '[HANG_MAN_CREATION]'
             send_msg(message)
             hang_man()
 
@@ -60,6 +60,7 @@ def send(msg):
         if '[INPUT_ERROR]' in result:  # If there is an input error msg returned
             print(f'{msg} is not a valid equation')
             continue
+
 
 # Handle message sending
 def send_msg(message):
@@ -88,26 +89,27 @@ def suffix_calculator():
 # Receive the starting message from the game
 # Pass messages back to the game object and recv the update each time
 def hang_man():
-    print('Welcome to Hang Man')
 
-    message = '[HANG_MAN]'
-    send_msg(message)  # Need to allow the server to first create the hangman object
+    result = client.recv(2048).decode(FORMAT)  # Receive the the hidden word and mxa_attempts
+    result = result.split("//") # Split the return string
+    print('Welcome to Hang Man')
+    print(f'The word is: {result[0]}   The maximum number of attempts is: {result[1]}')  # Print, take elements from list locations
 
     while connected:
-        print("[HANG_MAN_RECV]")
-        result = client.recv(2048).decode(FORMAT)  # Receive the start of the game (welcome msg, hidden_word ... ect )
-        print(f'The result is {result}')
+        message = input("\nMake a guess:   ")
+        message = '[HANG_MAN]' + message  # Add a pre-message for the server
+        send_msg(message)  # Need to allow the server to first create the hangman object
+        result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
+        result = result.split("//")
+        print(f'The word: {result[0]}  Number of failed Attempts: {result[1]}')
+        if result[2] == "True":
+            print("[SYSTEM] The game is finished")
+            break
 
-        # message = input('Start Guessing: ')
-        # message = message + '[HANGMAN]'
-        # send_msg(message)
+    send()
 
 
-
-
-
-msg = ' '
-send(msg)
+send()
 
 
 
