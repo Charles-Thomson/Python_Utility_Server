@@ -4,15 +4,22 @@
 
 **** Client ****
 
-working on a solution to receive and parse the data from the hang man game
+- check if there is a better solution to the receiving of messages for the hang man game
 
-With server: fix dissconnect and start working on !EXIT from utils
+- improve general robustness
+
+- Make separate method for invalid inputs and disconnect/exit
+
+- Generally sanitize inputs
+
 
 **** Server ****
 
-Changes to be made for the end of game and then work through some clean up
-
 Look at the calculator creation and see if the methods couldn't be called due to the way the object is created
+
+- Message handling for ! messages
+
+- Refactor the big while loop into smaller methods
 
 **** Calculator ****
 
@@ -21,17 +28,19 @@ Not working on currently - functional
 
 **** Hang Man ****
 
-Changes made to allow for individual attempts to be made
-
 - Guard needs to be made for empty msg sent to game
+
+- Improve overall robustness
 
 ****BACK LOG****
 
 NEXT: Change function and var names to be more appropriate
 
-1. Exit out of utility on server
+- Sanitize inputs on client side ( no ' ' messages )
 
-2. Fix !DISCONNECT call
+- move !messages in client to separate methods
 
-3. improve message robustness client -> server ie allow for A-a
+- Break the big while loop into small methods in server
+
+
 

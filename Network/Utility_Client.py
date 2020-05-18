@@ -32,7 +32,7 @@ AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man']
 def send(msg=''):
     global connected
     connected = True
-    print("[WELCOME]  Welcome to the Python Utility Server ")
+    print("\n[WELCOME]  Welcome to the Python Utility Server ")
     while connected:
 
         utility_selection = input("\nEnter the name of the Utility you want to use or type 'help' for help:  ")
@@ -51,6 +51,10 @@ def send(msg=''):
             message = '[HANG_MAN_CREATION]'
             send_msg(message)
             hang_man()
+
+        else:
+            print(f'[SYSTEM] {utility_selection} is not a utility - the available utilitys are {AVAILABLE_UTILITY}')
+            continue
 
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
         if '[DISCONNECT]' in result:  # If a disconnect msg is returned
@@ -91,22 +95,31 @@ def suffix_calculator():
 def hang_man():
 
     result = client.recv(2048).decode(FORMAT)  # Receive the the hidden word and mxa_attempts
-    result = result.split("//") # Split the return string
+    result = result.split("//")  # Split the return string
     print('Welcome to Hang Man')
     print(f'The word is: {result[0]}   The maximum number of attempts is: {result[1]}')  # Print, take elements from list locations
+    word = result[2]
 
     while connected:
         message = input("\nMake a guess:   ")
         message = '[HANG_MAN]' + message  # Add a pre-message for the server
         send_msg(message)  # Need to allow the server to first create the hangman object
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
-        result = result.split("//")
-        print(f'The word: {result[0]}  Number of failed Attempts: {result[1]}')
-        if result[2] == "True":
-            print("[SYSTEM] The game is finished")
-            break
+        if '[DISCONNECT]' in result:  # If a disconnect msg is returned
+            print('[DISCONNECTED] You have been disconnected')
+            sys.exit("\n[SYSTEM] User Disconnected")
+        else:
+            result = result.split("//")
+            print(f'The word: {result[0]}  Number of failed Attempts: {result[1]}')
+            if result[2] == "[GAME_WIN]":
+                print(f'\n[SYSTEM - GAME_RESULT] Congratulations you won. The word is {result[0]}')
+                break
+            if result[2] == "[GAME_LOSE]":
+                print(f'\n[SYSTEM - GAME_RESULT] You lost. The word was {word}')
+                break
 
     send()
+
 
 
 send()

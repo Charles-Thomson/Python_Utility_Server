@@ -7,6 +7,13 @@ from random_word import RandomWords
 import re
 import sys
 
+# ****
+# Const
+# ****
+
+GAME_WIN_MSG = '[GAME_WIN]'
+GAME_LOSE_MSG = '[GAME_LOSE]'
+
 
 class HangMan:
     def __init__(self):
@@ -15,7 +22,9 @@ class HangMan:
         global player_attempts
         global max_attempts
         global game_finished
-        game_finished = False
+        global game_completion_state
+
+        game_completion_state = ''
         word = ''
         hidden_word = ''
         player_attempts = 0
@@ -25,7 +34,7 @@ class HangMan:
         self.hidden_word = hidden_word
         self.player_attempts = player_attempts
         self.max_attempts = max_attempts
-        self.game_finished = game_finished
+        self.game_completion_state = game_completion_state
 
         generate_word()  # Generate a word
         hide_word(word)  # Hide the generated word using *
@@ -71,7 +80,7 @@ def make_guess(user_guess):
     global hidden_word
     global max_attempts
     global player_attempts
-    global game_finished
+    global game_completion_state
 
     print(f'The maximum number of attempts is {max_attempts}')
 
@@ -79,11 +88,11 @@ def make_guess(user_guess):
 
     if player_attempts == max_attempts:  # If the user takes more then the max number of attempts
         print(f'[LOSE] You have taken to may attempts. The word was - {word}')
-        finished_game()
+        game_completion_state = GAME_LOSE_MSG
 
     elif '*' not in hidden_word:  # If * is not in hidden word all letters have been found
         print(f'[WIN] You have found all the letters in the word - {word}')
-        finished_game()
+        game_completion_state = GAME_WIN_MSG
         # sys.exit("Game finished")
 
     elif guess_location == -1:  # If the letter is not in the word

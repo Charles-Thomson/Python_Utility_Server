@@ -49,7 +49,7 @@ def handle_client(connection, address):
         if msg_length:  # Check if the msg has content - first msg is always blank on connection
             msg_length = int(msg_length)  # convert to int
             msg = connection.recv(msg_length).decode(FORMAT)  # The actual msg is of length msg_length(decoded HEADER)
-            if msg == DISCONNECT_MSG:  # If the DISCONNECT_MSG is received
+            if DISCONNECT_MSG in msg:  # If the DISCONNECT_MSG is received
                 print(f'[DISCONNECT] {address} has disconnected')
                 result = '[DISCONNECT]'
                 return_msg(connection, result,  msg)
@@ -82,8 +82,9 @@ def handle_client(connection, address):
                 hang_man_obj.HangMan()
                 hidden_word = hang_man_obj.hidden_word
                 max_attempts = hang_man_obj.max_attempts
+                word = hang_man_obj.word
 
-                result = hidden_word + "//" + str(max_attempts)
+                result = hidden_word + "//" + str(max_attempts) + "//" + word
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
             if '[HANG_MAN]' in msg:
@@ -95,23 +96,22 @@ def handle_client(connection, address):
 
                 print(f'[SERVER] The word is: {word}  The hidden word is: {hidden_word}  \nMax guesses is {max_attempts}')
 
-                game_finished = hang_man_obj.game_finished
                 user_guess = msg
 
                 hang_man_obj.make_guess(user_guess)
 
-                # Print block for the game status at each stage
+                # pull the result after each msg is passed to the object
 
                 word = hang_man_obj.word
                 hidden_word = hang_man_obj.hidden_word
                 player_attempts = hang_man_obj.player_attempts
-                game_finished = hang_man_obj.game_finished
+                game_completion_state = hang_man_obj.game_completion_state
 
-                print(f'\n[GAME STATUS - SERVER] \nword: {word} \nhidden word: {hidden_word} \nPlayer attempts: {[player_attempts]} \nGame Finished: {game_finished}')
+                # Print for debug
+                print(f'\n[GAME STATUS - SERVER] \nword: {word} \nhidden word: {hidden_word} \nPlayer attempts: {[player_attempts]} \nGame Finished: {game_completion_state}')
 
-                result = hidden_word + "//" + str(player_attempts) + "//" + str(game_finished)
+                result = hidden_word + "//" + str(player_attempts) + "//" + game_completion_state
                 return_msg(connection, result, msg)  # Pass info to the return msg function
-
 
     connection.close()  # Close the connection
     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
