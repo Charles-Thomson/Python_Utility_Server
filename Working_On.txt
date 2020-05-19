@@ -10,25 +10,15 @@
 
 - Make separate method for invalid inputs and disconnect/exit
 
-- Generally sanitize inputs
-
 
 **** Server ****
 
-Look at the calculator creation and see if the methods couldn't be called due to the way the object is created
-
 - Message handling for ! messages
-
-- Refactor the big while loop into smaller methods
 
 **** Calculator ****
 
-Not working on currently - functional
-
 
 **** Hang Man ****
-
-- Guard needs to be made for empty msg sent to game
 
 - Improve overall robustness
 
@@ -36,11 +26,11 @@ Not working on currently - functional
 
 NEXT: Change function and var names to be more appropriate
 
-- Sanitize inputs on client side ( no ' ' messages )
-
 - move !messages in client to separate methods
 
-- Break the big while loop into small methods in server
+**** BUGS ****
+
+- The players_attempts on the Hang Man game is being shared across clients
 
 
 

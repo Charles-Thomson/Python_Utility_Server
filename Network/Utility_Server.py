@@ -7,6 +7,7 @@ import threading
 
 from Utility.Polish_Notation import Polish_Notation_Calculator as Polish_Notation
 from Utility.Hang_Man import Hang_Man_Game as Hang_Man
+from Utility import Run_Utility as Run
 
 import sys
 
@@ -41,8 +42,7 @@ def handle_client(connection, address):
     # Print when new connection is made
     print(f"[NEW CONNECTION] {address} connected ")
 
-    connected = True  # While the client is connected
-    while connected:
+    while True:
         msg_length = connection.recv(HEADER).decode(FORMAT)  # Blocking until msg received from client -
         # The length of the message is equal to the header value
         # Decode by FORMAT as each msg is encoded
@@ -53,64 +53,22 @@ def handle_client(connection, address):
                 print(f'[DISCONNECT] {address} has disconnected')
                 result = '[DISCONNECT]'
                 return_msg(connection, result,  msg)
-                connected = False  # or "break - breaks out of the loop on disconnect request
                 break
 
             if '[SUFFIX_CALCULATOR]' in msg:
 
-                msg = msg.replace('[SUFFIX_CALCULATOR]', '')
-
-                print(f'The current message after .replace = {msg}')
-
-                print(f"[{address}] has sent {msg}")  # Print the msg and the address it came from
-
-                user_input = msg  # Name change for consistency in computation module
-
-                calculator_obj = Polish_Notation.start_computation(user_input)  # Make a new computation object and pass the user_input
-
-                print(calculator_obj.global_result)
-
-                result = str(calculator_obj.global_result)  # result pulled from a global var in the computation object and converted to string to allow for encoding
-
-                print(f'Result in the server is:  {result}')  # Debug print
+                result = Run.run_suffix_calculator(msg)  # Result of the calculator
 
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
             if '[HANG_MAN_CREATION]' in msg:
                 print("[CREATION] Creating game object:  Hang Man")
-                hang_man_obj = Hang_Man
-                hang_man_obj.HangMan()
-                hidden_word = hang_man_obj.hidden_word
-                max_attempts = hang_man_obj.max_attempts
-                word = hang_man_obj.word
-
-                result = hidden_word + "//" + str(max_attempts) + "//" + word
+                hang_man_obj = Run.create_hang_man_object()
+                result = Run.initial_hang_man_details(hang_man_obj) # Get the details for the start of the game
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
             if '[HANG_MAN]' in msg:
-
-                msg = msg.replace('[HANG_MAN]', '')
-                word = hang_man_obj.word
-                hidden_word = hang_man_obj.hidden_word
-                max_attempts = hang_man_obj.max_attempts
-
-                print(f'[SERVER] The word is: {word}  The hidden word is: {hidden_word}  \nMax guesses is {max_attempts}')
-
-                user_guess = msg
-
-                hang_man_obj.make_guess(user_guess)
-
-                # pull the result after each msg is passed to the object
-
-                word = hang_man_obj.word
-                hidden_word = hang_man_obj.hidden_word
-                player_attempts = hang_man_obj.player_attempts
-                game_completion_state = hang_man_obj.game_completion_state
-
-                # Print for debug
-                print(f'\n[GAME STATUS - SERVER] \nword: {word} \nhidden word: {hidden_word} \nPlayer attempts: {[player_attempts]} \nGame Finished: {game_completion_state}')
-
-                result = hidden_word + "//" + str(player_attempts) + "//" + game_completion_state
+                result = Run.run_hang_man(msg, hang_man_obj)  # pass the msg and the game object
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
     connection.close()  # Close the connection
