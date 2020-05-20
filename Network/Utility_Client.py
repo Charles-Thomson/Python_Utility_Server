@@ -17,11 +17,19 @@ FORMAT = 'utf-8'  # The msg encode as
 SERVER = "192.168.56.1"  # Server location - robustness issue ?
 ADDRESS = (SERVER, PORT)  # Address is the server IP and the PORT number being used
 
-DISCONNECT_RESULT = "[DISCONNECT]"
+INPUT_ERROR_MSG = '[INPUT_ERROR]'
+DISCONNECT_RESULT_MSG = "[DISCONNECT]"
+
 DISCONNECT_MSG = "!DISCONNECT"  # For clean disconnection of client
-EXIT_UTILITY = "!EXIT"
+EXIT_UTILITY_MSG = "!EXIT"
+
+
 VALID_OPERATORS = " x-/+"  # Valid operators
 AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man']
+
+# Message Tags
+SUFFIX_TAG = '[SUFFIX_CALCULATOR]'
+HANG_MAN_TAG = '[HANG_MAN]'
 
 # Create the client socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,9 +38,8 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDRESS)
 
 
-# Can change to check if the incoming msg is in a list of known error messages
-# Send msg
-def send(msg=''):
+# Main process for client, handles selection of util
+def utility_handling(msg=''):
     # global connected
     # connected = True
     print("\n[WELCOME]  Welcome to the Python Utility Server ")
@@ -45,12 +52,9 @@ def send(msg=''):
 
         if 'Suffix Calculator' in utility_selection:
             print("Calculator chosen")
-            message = '[SUFFIX_CALCULATOR]'
-            # send_msg(message)
             suffix_calculator()
 
         if 'Hang Man' in utility_selection:
-            print("Hang Man chosen")
             message = '[HANG_MAN_CREATION]'
             send_msg(message)
             hang_man()
@@ -60,7 +64,7 @@ def send(msg=''):
             continue
 
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
-        if DISCONNECT_RESULT in result:  # If a disconnect msg is returned
+        if DISCONNECT_RESULT_MSG in result:  # If a disconnect msg is returned
             disconnect()
 
 
@@ -84,6 +88,20 @@ def send_msg(message):
         print("Can't send an empty message")
 
 
+# Check to see if play again - for hang man only currelty
+def play_again_hang_man():
+    replay = input("Do you want to play again? (y/n)  :   ")
+    if replay == "y":
+        message = '[HANG_MAN_CREATION]'
+        send_msg(message)
+        hang_man()
+    if replay == "n":
+        utility_handling()
+    else:
+        print(f'{replay} is not a valid choice')
+        play_again_hang_man()
+
+
 # Start and run the suffix calculator
 def suffix_calculator():
     print('Welcome to the Polish Notation (Suffix) calculator')
@@ -92,26 +110,28 @@ def suffix_calculator():
 
         # Check to  see if the msg is empty
         if message:
-            message = '[SUFFIX_CALCULATOR]' + message  # Add a pre-message for the server
+            message = SUFFIX_TAG + message  # Add a pre-message for the server
             send_msg(message)  # Need to allow the server to first create the hangman object
         else:
             continue
 
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
 
-        if DISCONNECT_RESULT in result:  # If a disconnect msg is returned
+        if DISCONNECT_RESULT_MSG in result:  # If a disconnect msg is returned
             disconnect()
 
-        elif '[INPUT_ERROR]' in result:  # If there is an input error msg returned
+        elif EXIT_UTILITY_MSG in result:
+            print('\n[SYSTEM] Exiting Utility')
+            utility_handling()
+
+        elif INPUT_ERROR_MSG in result:  # If there is an input error msg returned
             print(f'{message} is not a valid equation')
-            continue
+            break
         else:
             print(f'The result is {result}')
 
 
-# Going to need to first create the object on the server
-# Receive the starting message from the game
-# Pass messages back to the game object and recv the update each time
+# Hang man game
 def hang_man():
 
     result = client.recv(2048).decode(FORMAT)  # Receive the the hidden word and mxa_attempts
@@ -125,28 +145,36 @@ def hang_man():
 
         # Check to  see if the msg is empty
         if message:
-            message = '[HANG_MAN]' + message  # Add a pre-message for the server
+            message = HANG_MAN_TAG + message  # Add a pre-message for the server
             send_msg(message)  # Need to allow the server to first create the hangman object
         else:
             continue
 
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
-        if DISCONNECT_RESULT in result:  # If a disconnect msg is returned
+
+        if DISCONNECT_RESULT_MSG in result:  # If a disconnect msg is returned
             disconnect()
+
+        elif EXIT_UTILITY_MSG in result:
+            print('\n[SYSTEM] Exiting Utility')
+            break
+
         else:
             result = result.split("//")  # Split the result - giving a list
             print(f'The word: {result[0]}  Number of failed Attempts: {result[1]}')
+
             if result[2] == "[GAME_WIN]":  # List element 2 is a tag - return result depending on the tag
                 print(f'\n[SYSTEM - GAME_RESULT] Congratulations you won. The word is {result[0]}')
-                break
+                play_again_hang_man()
+
             if result[2] == "[GAME_LOSE]":
                 print(f'\n[SYSTEM - GAME_RESULT] You lost. The word was {word}')
-                break
+                play_again_hang_man()
 
-    send()
+    utility_handling()
 
 
-send()
+utility_handling()
 
 
 

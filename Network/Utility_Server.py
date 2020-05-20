@@ -28,7 +28,7 @@ ADDRESS = (SERVER, PORT)  # Address is the server IP and the PORT number being u
 FORMAT = 'utf-8'  # The msg encode as
 
 DISCONNECT_MSG = "!DISCONNECT"  # For clean disconnection of client
-EXIT_MSG = "!EXIT"  # Exit out of current utility
+EXIT_UTILITY_MSG = "!EXIT"  # Exit out of current utility
 
 # Create the server socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,23 +46,28 @@ def handle_client(connection, address):
         msg_length = connection.recv(HEADER).decode(FORMAT)  # Blocking until msg received from client -
         # The length of the message is equal to the header value
         # Decode by FORMAT as each msg is encoded
+
         if msg_length:  # Check if the msg has content - first msg is always blank on connection
             msg_length = int(msg_length)  # convert to int
             msg = connection.recv(msg_length).decode(FORMAT)  # The actual msg is of length msg_length(decoded HEADER)
+
             if DISCONNECT_MSG in msg:  # If the DISCONNECT_MSG is received
                 print(f'[DISCONNECT] {address} has disconnected')
                 result = '[DISCONNECT]'
                 return_msg(connection, result,  msg)
                 break
 
+            if EXIT_UTILITY_MSG in msg:
+                print(f'\n[EXIT_UTILITY] {address} has exited the current utility')
+                result = EXIT_UTILITY_MSG
+                return_msg(connection, result, msg)
+                continue
+
             if '[SUFFIX_CALCULATOR]' in msg:
-
                 result = Run.run_suffix_calculator(msg)  # Result of the calculator
-
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
             if '[HANG_MAN_CREATION]' in msg:
-                print("[CREATION] Creating game object:  Hang Man")
                 hang_man_obj = Run.create_hang_man_object()
                 result = Run.initial_hang_man_details(hang_man_obj) # Get the details for the start of the game
                 return_msg(connection, result, msg)  # Pass info to the return msg function
