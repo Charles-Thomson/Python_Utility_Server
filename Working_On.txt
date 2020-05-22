@@ -6,14 +6,14 @@
 
 - check if there is a better solution to the receiving of messages for the hang man game
 
-- improve general robustness
+- Need to add a user name (Server refactoring also needed)
 
-- Make separate method for invalid inputs and disconnect/exit
+- improve general robustness
 
 
 **** Server ****
 
-- Message handling for ! messages
+- Case switch for client_handling if statements
 
 **** Calculator ****
 
@@ -22,11 +22,22 @@
 
 - Improve overall robustness
 
+
+**** Chat Room ****
+
+- Basic implementation done
+
+- Need to add name (Server changes needed)
+
+- Need to add !message handling
+
+- Create multiple chat rooms , maybe as objects ?
+
 ****BACK LOG****
 
 NEXT: Change function and var names to be more appropriate
 
-- move !messages in client to separate methods
+- Create a GUI, maybe in Kivy
 
 **** BUGS ****
 

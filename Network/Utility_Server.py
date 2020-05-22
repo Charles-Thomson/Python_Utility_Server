@@ -8,6 +8,7 @@ import threading
 from Utility.Polish_Notation import Polish_Notation_Calculator as Polish_Notation
 from Utility.Hang_Man import Hang_Man_Game as Hang_Man
 from Utility import Run_Utility as Run
+from Utility import Chat_Room
 
 import sys
 
@@ -36,6 +37,9 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Bind socket to ADDRESS
 server.bind(ADDRESS)
 
+# The available chat room objects
+CHAT_ROOMS = []
+
 
 # Handle each client in new thread
 def handle_client(connection, address):
@@ -63,18 +67,33 @@ def handle_client(connection, address):
                 return_msg(connection, result, msg)
                 continue
 
-            if '[SUFFIX_CALCULATOR]' in msg:
-                result = Run.run_suffix_calculator(msg)  # Result of the calculator
-                return_msg(connection, result, msg)  # Pass info to the return msg function
-
             if '[HANG_MAN_CREATION]' in msg:
                 hang_man_obj = Run.create_hang_man_object()
                 result = Run.initial_hang_man_details(hang_man_obj) # Get the details for the start of the game
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
+            if '[JOIN_CHAT_ROOM]' in msg:
+                Chat_Room.new_client(connection)
+                result = "You have joined the chat room"
+                return_msg(connection, result, msg)
+
+            if '[CHAT_ROOM_CREATION]' in msg:
+                chat_room_object = Run.create_chat_room_object()
+                result = Run.initial_hang_man_details(chat_room_object)
+                return_msg(connection, result, msg)
+                return
+
+            if '[SUFFIX_CALCULATOR]' in msg:
+                result = Run.run_suffix_calculator(msg)  # Result of the calculator
+                return_msg(connection, result, msg)  # Pass info to the return msg function
+
             if '[HANG_MAN]' in msg:
                 result = Run.run_hang_man(msg, hang_man_obj)  # pass the msg and the game object
                 return_msg(connection, result, msg)  # Pass info to the return msg function
+
+            if '[CHAT_ROOM]' in msg:
+                Chat_Room.handle_new_message(msg)
+
 
     connection.close()  # Close the connection
     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")

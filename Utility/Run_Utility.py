@@ -23,6 +23,21 @@ def create_hang_man_object():
     return hang_man_obj
 
 
+# Create a new chat room
+def create_chat_room_object():
+    chat_room_object = new_chat_room()
+    return chat_room_object
+
+
+def new_chat_room():
+    pass
+
+
+# pass the initial details for the chat room
+def initial_chat_room_details():
+    pass
+
+
 def initial_hang_man_details(hang_man_obj):
     hidden_word = hang_man_obj.hidden_word
     max_attempts = hang_man_obj.max_attempts

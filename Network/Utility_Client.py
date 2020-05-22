@@ -4,12 +4,16 @@
 
 import socket
 import sys
+import threading
 from string import digits
+
 # ****
 # Const
 # ****
 
 # Header represents the max msg length, can cause issue for long msg if the header value is small
+from threading import Thread
+
 HEADER = 64  # First msg to server is always 64 - represents the length of the msg about to be received
 PORT = 5060  # Port
 
@@ -23,13 +27,13 @@ DISCONNECT_RESULT_MSG = "[DISCONNECT]"
 DISCONNECT_MSG = "!DISCONNECT"  # For clean disconnection of client
 EXIT_UTILITY_MSG = "!EXIT"
 
-
 VALID_OPERATORS = " x-/+"  # Valid operators
-AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man']
+AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man', 'Chat Room']
 
 # Message Tags
 SUFFIX_TAG = '[SUFFIX_CALCULATOR]'
 HANG_MAN_TAG = '[HANG_MAN]'
+CHAT_ROOM_TAG = '[CHAT_ROOM]'
 
 # Create the client socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -58,6 +62,11 @@ def utility_handling(msg=''):
             message = '[HANG_MAN_CREATION]'
             send_msg(message)
             hang_man()
+
+        if 'Chat Room' in utility_selection:
+            message = '[JOIN_CHAT_ROOM]'
+            send_msg(message)
+            chat_room()
 
         else:
             print(f'[SYSTEM] {utility_selection} is not a utility - the available utilitys are {AVAILABLE_UTILITY}')
@@ -133,11 +142,11 @@ def suffix_calculator():
 
 # Hang man game
 def hang_man():
-
     result = client.recv(2048).decode(FORMAT)  # Receive the the hidden word and mxa_attempts
     result = result.split("//")  # Split the return string
     print('Welcome to Hang Man')
-    print(f'The word is: {result[0]}   The maximum number of attempts is: {result[1]}')  # Print, take elements from list locations
+    print(
+        f'The word is: {result[0]}   The maximum number of attempts is: {result[1]}')  # Print, take elements from list locations
     word = result[2]
 
     while True:
@@ -174,7 +183,34 @@ def hang_man():
     utility_handling()
 
 
+# Create a thread to start listening
+def start_listening():
+    print("[SYSTEM] in Start Listening ")
+    thread = threading.Thread(target=listen, args=())
+    thread.start()
+
+
+def listen():
+    print("[SYSTEM] listen thread running")
+    while True:
+        result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
+        print(result)
+
+
+def chat_room():
+    print("\n welcome to the chat room")
+    result = client.recv(2048).decode(FORMAT)
+    print(result)
+    start_listening()  # This is need so the sending off messages is not blocking to receiving messages
+
+    while True:
+        message = input("Say Something:   ")
+
+        if message:
+            message = CHAT_ROOM_TAG + message  # Add a pre-message for the server
+            send_msg(message)  # Need to allow the server to first create the hangman object
+        else:
+            continue
+
+
 utility_handling()
-
-
-
