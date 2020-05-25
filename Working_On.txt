@@ -25,19 +25,18 @@
 
 **** Chat Room ****
 
-- Basic implementation done
-
-- Need to add name (Server changes needed)
-
-- Need to add !message handling
-
-- Create multiple chat rooms , maybe as objects ?
+- Handling the message handling in the chat room util file, need to only send to the none sender
 
 ****BACK LOG****
 
-NEXT: Change function and var names to be more appropriate
+Tuesday Task
 
-- Create a GUI, maybe in Kivy
+- Change Server and client to put a name in the message header of the messages
+
+- User enters name at start up
+
+- Message Tags for utils moved into the header
+
 
 **** BUGS ****
 

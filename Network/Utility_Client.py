@@ -30,10 +30,11 @@ EXIT_UTILITY_MSG = "!EXIT"
 VALID_OPERATORS = " x-/+"  # Valid operators
 AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man', 'Chat Room']
 
-# Message Tags
+# Message Tags attached to messages for the server
 SUFFIX_TAG = '[SUFFIX_CALCULATOR]'
 HANG_MAN_TAG = '[HANG_MAN]'
 CHAT_ROOM_TAG = '[CHAT_ROOM]'
+
 
 # Create the client socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,9 +45,8 @@ client.connect(ADDRESS)
 
 # Main process for client, handles selection of util
 def utility_handling(msg=''):
-    # global connected
-    # connected = True
     print("\n[WELCOME]  Welcome to the Python Utility Server ")
+    print(f"[ACTIVE THREADS] {threading.activeCount()}")
     while True:
 
         utility_selection = input("\nEnter the name of the Utility you want to use or type 'help' for help:  ")
@@ -66,6 +66,11 @@ def utility_handling(msg=''):
         if 'Chat Room' in utility_selection:
             message = '[JOIN_CHAT_ROOM]'
             send_msg(message)
+            # chat_room()
+
+            thread_listen = threading.Thread(target=listen, args=())
+            thread_listen.start()
+
             chat_room()
 
         else:
@@ -185,23 +190,31 @@ def hang_man():
 
 # Create a thread to start listening
 def start_listening():
+
     print("[SYSTEM] in Start Listening ")
     thread = threading.Thread(target=listen, args=())
     thread.start()
 
-
+# This is in it's own thread
 def listen():
+
     print("[SYSTEM] listen thread running")
     while True:
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
-        print(result)
+
+        if EXIT_UTILITY_MSG in result:
+            print('\n[SYSTEM] Exiting Utility')
+            sys.exit("[CLOSE_CHAT_THREAD]")  # Closes the thread
+
+        else:
+            print(f'\n{result}')
 
 
 def chat_room():
-    print("\n welcome to the chat room")
-    result = client.recv(2048).decode(FORMAT)
-    print(result)
-    start_listening()  # This is need so the sending off messages is not blocking to receiving messages
+
+    print("\n[CLIENT] welcome to the chat room")
+    #result = client.recv(2048).decode(FORMAT)
+    #print(result)
 
     while True:
         message = input("Say Something:   ")
@@ -209,8 +222,14 @@ def chat_room():
         if message:
             message = CHAT_ROOM_TAG + message  # Add a pre-message for the server
             send_msg(message)  # Need to allow the server to first create the hangman object
+            if EXIT_UTILITY_MSG in message:
+                print('\n[SYSTEM-CHAT_ROOM] Exiting Utility')
+                break
+
         else:
             continue
+
+    utility_handling()
 
 
 utility_handling()

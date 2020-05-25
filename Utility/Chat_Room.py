@@ -19,7 +19,7 @@ def new_client(connection):
     print(f'\n[SYSTEM]{connection} has connected')
 
 
-# Disconnect a client from te chat room
+# Disconnect a client from the chat room
 def disconnect_client(connection):
     clients.remove(connection)
     print(f'\n[SYSTEM] {connection} has disconnected')
