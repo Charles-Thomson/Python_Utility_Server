@@ -34,6 +34,8 @@ AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man', 'Chat Room']
 SUFFIX_TAG = '[SUFFIX_CALCULATOR]'
 HANG_MAN_TAG = '[HANG_MAN]'
 CHAT_ROOM_TAG = '[CHAT_ROOM]'
+EXIT_CHAT_ROOM_TAG = '[EXIT_CHAT_ROOM]'
+USER_NAME_TAG = '[USER_NAME]'
 
 
 # Create the client socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
@@ -43,10 +45,18 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDRESS)
 
 
+def send_user_name():
+    user_name = input("Enter user name: ")
+    message = USER_NAME_TAG + user_name
+    send_msg(message)
+    utility_handling(user_name)
+
+
 # Main process for client, handles selection of util
-def utility_handling(msg=''):
-    print("\n[WELCOME]  Welcome to the Python Utility Server ")
+def utility_handling(user_name=''):
+    print(f'\n[WELCOME] Hello {user_name} Welcome to the Python Utility Server ')
     print(f"[ACTIVE THREADS] {threading.activeCount()}")
+
     while True:
 
         utility_selection = input("\nEnter the name of the Utility you want to use or type 'help' for help:  ")
@@ -195,6 +205,7 @@ def start_listening():
     thread = threading.Thread(target=listen, args=())
     thread.start()
 
+
 # This is in it's own thread
 def listen():
 
@@ -207,22 +218,22 @@ def listen():
             sys.exit("[CLOSE_CHAT_THREAD]")  # Closes the thread
 
         else:
-            print(f'\n{result}')
+            print(f'{result}')
 
 
 def chat_room():
 
     print("\n[CLIENT] welcome to the chat room")
-    #result = client.recv(2048).decode(FORMAT)
-    #print(result)
 
     while True:
-        message = input("Say Something:   ")
+        message = input()
 
         if message:
             message = CHAT_ROOM_TAG + message  # Add a pre-message for the server
             send_msg(message)  # Need to allow the server to first create the hangman object
             if EXIT_UTILITY_MSG in message:
+                message = EXIT_CHAT_ROOM_TAG
+                send_msg(message)
                 print('\n[SYSTEM-CHAT_ROOM] Exiting Utility')
                 break
 
@@ -232,4 +243,4 @@ def chat_room():
     utility_handling()
 
 
-utility_handling()
+send_user_name()

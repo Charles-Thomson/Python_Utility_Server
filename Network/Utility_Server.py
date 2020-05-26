@@ -39,6 +39,7 @@ server.bind(ADDRESS)
 
 # The available chat room objects
 CHAT_ROOMS = []
+CONNECTED_USERS = []
 
 
 # Handle each client in new thread
@@ -55,6 +56,15 @@ def handle_client(connection, address):
             msg_length = int(msg_length)  # convert to int
             msg = connection.recv(msg_length).decode(FORMAT)  # The actual msg is of length msg_length(decoded HEADER)
 
+            if '[USER_NAME]' in msg:  # If the DISCONNECT_MSG is received
+                msg = msg.replace('[USER_NAME]', '')
+                print(f'[SERVER] {msg} has connected ')
+                connected_user = (msg, address)
+                CONNECTED_USERS.append(connected_user)
+                user_name = msg
+                print(f'[SYSTEM_CONNECTED] The connected users are {CONNECTED_USERS}')
+
+            # If the disconnect msg is received
             if DISCONNECT_MSG in msg:  # If the DISCONNECT_MSG is received
                 print(f'[DISCONNECT] {address} has disconnected')
                 result = '[DISCONNECT]'
@@ -69,7 +79,7 @@ def handle_client(connection, address):
 
             if '[HANG_MAN_CREATION]' in msg:
                 hang_man_obj = Run.create_hang_man_object()
-                result = Run.initial_hang_man_details(hang_man_obj) # Get the details for the start of the game
+                result = Run.initial_hang_man_details(hang_man_obj)  # Get the details for the start of the game
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
             if '[JOIN_CHAT_ROOM]' in msg:
@@ -92,8 +102,10 @@ def handle_client(connection, address):
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
             if '[CHAT_ROOM]' in msg:
-                Chat_Room.handle_new_message(msg)
+                Chat_Room.handle_new_message(msg, connection, user_name)
 
+            if '[EXIT_CHAT_ROOM]' in msg:
+                Chat_Room.disconnect_client(connection)
 
     connection.close()  # Close the connection
     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
