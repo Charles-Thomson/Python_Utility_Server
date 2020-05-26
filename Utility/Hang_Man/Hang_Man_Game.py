@@ -102,23 +102,6 @@ def make_guess(user_guess):
     else:
         check_guess(user_guess)
 
-    # print(f'Word - {hidden_word}')  # Return the updated hidden word
-    # print(f'\n [GAME STATUS] \n word: {word} \n hidden word: {hidden_word} \n Player attempts: {[player_attempts]} \n Game Finished: {game_finished}')
-    # user_guess = input("\n Take a guess :  ")  # The user given guess
-    # make_guess(user_guess)
-
-
-
- #   play_again = input('\nPlay again ? (y/n) :  ')  # Offer to play again
-
-  #  if play_again == "y":
-        #HangMan()
-
-   # elif play_again == "n":
-    #    print('Sore loser')
-     #   finished_game()
-      #  print('[SYSTEM] Exiting Game')
-
 
 if __name__ == '__main__':  # If run as module, start game
     HangMan()

@@ -15,8 +15,12 @@
 
 **** Calculator ****
 
+- Bug on exit of util
+
 
 **** Hang Man ****
+
+- The players_attempts on the Hang Man game is being shared across clients
 
 - Improve overall robustness
 
@@ -30,9 +34,7 @@
 ****BACK LOG****
 
 
-**** BUGS ****
 
-- The players_attempts on the Hang Man game is being shared across clients
 
 
 

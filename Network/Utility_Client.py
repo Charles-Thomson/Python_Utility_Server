@@ -5,7 +5,7 @@
 import socket
 import sys
 import threading
-from string import digits
+
 
 # ****
 # Const
@@ -27,7 +27,6 @@ DISCONNECT_RESULT_MSG = "[DISCONNECT]"
 DISCONNECT_MSG = "!DISCONNECT"  # For clean disconnection of client
 EXIT_UTILITY_MSG = "!EXIT"
 
-VALID_OPERATORS = " x-/+"  # Valid operators
 AVAILABLE_UTILITY = ['Suffix Calculator', 'Hang Man', 'Chat Room']
 
 # Message Tags attached to messages for the server
