@@ -1,0 +1,38 @@
+<login_page>
+    FloatLayout:
+
+        canvas.before:
+            Color:
+                rgb: (0,0,.5)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+
+
+        MDTextFieldRound:
+            id: username_field
+            icon_left: 'account'
+            icon_right: ''
+            hint_text: "Enter a Username"
+            hint_text_color: (1,1,1,1)
+            foreground_color:
+            pos_hint: {"x": 0.3, "top": 1.5}
+            size_hint: .4, 1
+
+        MDFillRoundFlatButton:
+            id: name_field_button
+            text: "CONNECT"
+            bold: True
+            theme_text_colour: 'Custom'
+            text_color: (1,1,1,1)
+            pos_hint: {"x": 0.3, "top": .4}
+            size_hint: .4, .09
+            on_release: root.send_username(username_field.text)
+
+
+
+
+
+
+

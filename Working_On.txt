@@ -6,16 +6,12 @@
 
 - check if there is a better solution to the receiving of messages for the hang man game
 
-- improve general robustness
-
+- Refactoring to work with the kivy ui
 
 **** Server ****
 
-- Case switch for client_handling if statements
 
 **** Calculator ****
-
-- Bug on exit of util
 
 
 **** Hang Man ****
@@ -30,6 +26,18 @@
 - Add a msg when user disconnects
 
 - add command to see connected users
+
+**** UI ****
+
+- Initial frame work set up
+
+- Moving elements over to function with the kivy ui elements
+
+- Known issue: Anything that prints to the command line currently breaks the kivy build
+
+-  Main navigation page needs to be created
+
+- UI needs to be created for each utility
 
 ****BACK LOG****
 

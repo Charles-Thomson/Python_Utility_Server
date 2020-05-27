@@ -44,16 +44,16 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDRESS)
 
 
-def send_user_name():
-    user_name = input("Enter user name: ")
-    message = USER_NAME_TAG + user_name
+def send_user_name(username=""):
+    print(username)
+    message = USER_NAME_TAG + username
     send_msg(message)
-    utility_handling(user_name)
+    utility_handling(username)
 
 
 # Main process for client, handles selection of util
-def utility_handling(user_name=''):
-    print(f'\n[WELCOME] Hello {user_name} Welcome to the Python Utility Server ')
+def utility_handling(username=''):
+    print(f'\n[WELCOME] Hello {username} Welcome to the Python Utility Server ')
     print(f"[ACTIVE THREADS] {threading.activeCount()}")
 
     while True:
@@ -82,6 +82,9 @@ def utility_handling(user_name=''):
 
             chat_room()
 
+        if DISCONNECT_MSG in utility_selection:  # If a disconnect msg is returned
+            disconnect()
+
         else:
             print(f'[SYSTEM] {utility_selection} is not a utility - the available utilitys are {AVAILABLE_UTILITY}')
             continue
@@ -94,6 +97,8 @@ def utility_handling(user_name=''):
 # Handling the !DISCONNECT requests
 def disconnect():
     print('[DISCONNECTED] You have been disconnected')
+    message = DISCONNECT_MSG
+    send_msg(message)
     sys.exit("\n[SYSTEM] User Disconnected")
 
 
@@ -149,7 +154,7 @@ def suffix_calculator():
 
         elif INPUT_ERROR_MSG in result:  # If there is an input error msg returned
             print(f'{message} is not a valid equation')
-            break
+            continue
         else:
             print(f'The result is {result}')
 
@@ -242,4 +247,6 @@ def chat_room():
     utility_handling()
 
 
-send_user_name()
+if __name__ == "__main__":
+    username = input("Enter Username: ")
+    send_user_name(username)

@@ -41,7 +41,7 @@ CONNECTED_USERS = []
 # Handle each client in new thread
 def handle_client(connection, address):
     # Print when new connection is made
-    print(f"[NEW CONNECTION] {address} connected ")
+    print(f"[NEW_SERVER_CONNECTION] {address} connected ")
 
     while True:
         msg_length = connection.recv(HEADER).decode(FORMAT)  # Blocking until msg received from client -
