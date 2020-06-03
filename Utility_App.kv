@@ -1,81 +1,94 @@
 
+<ItemDrawer>:
+    theme_text_color: "Custom"
+    on_release: self.parent.set_color_item(self)
 
-# ****
-# Custom Widgets
-# ****
+    IconLeftWidget:
+        id: icon
+        icon: root.icon
+        theme_text_color: "Custom"
+        text_color: root.text_color
 
-<Header_Bar>
-    FloatLayout:
+
+<ContentNavigationDrawer>:
+    orientation: "vertical"
+    padding: "8dp"
+    spacing: "8dp"
+
+    AnchorLayout:
+        anchor_x: "left"
         size_hint_y: None
-        pos_hint: {"x":0, "top":1}
-        height: 60
-        canvas.before:
-            Color:
-                rgb: (0,0,.5)
-            Rectangle:
-                pos: self.pos
-                size: self.size
+        height: avatar.height
 
-        Label:
-            text: "Python Utility Server"
-            font_size: 20
-            color: 1,1,1,1
-            halign: "left"
-            pos_hint: {"x":0, "top":1 }
-            bold: True
+        Image:
+            id: avatar
+            size_hint: None, None
+            size: "56dp", "56dp"
+            source: "data/logo/kivy-icon-256.png"
 
-<Header_Action_Bar>
-    BoxLayout:
-        orientation: 'vertical'
+    MDLabel:
+        text: "Python Utility Server"
+        font_style: "Button"
         size_hint_y: None
-        pos_hint: {"x":0, "top":1}
-        height: 60
-        MDToolbar:
-            title: "Python Utility Server"
-            md_bg_color: app.theme_cls.primary_color
-            left_action_items: [['magnify', lambda x: print(x)]]
+        height: self.texture_size[1]
+
+    MDLabel:
+        text: "Charles.Steven.Thomson@gmail.com"
+        font_style: "Caption"
+        size_hint_y: None
+        height: self.texture_size[1]
+
+    ScrollView:
+
+        DrawerList:
+            id: md_list
 
 
 
-# ****
-# Pages
-# ****
+Screen:
+
+    NavigationLayout:
+
+        ScreenManager: # Add screens following this
+            id: ScreenManager
+
+            Screen:  # Screen being defined ?
+                name: "Screen 1"
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    MDToolbar:
+                        title: "Python Utility Server"
+                        elevation: 10
+                        left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
+                        md_bg_color: app.theme_cls.primary_color
 
 
+                    Button:
+                        text: "Test"
+                        on_release: ScreenManager.current = "Screen 2"
+            Screen:
+                name: "Screen 2"
+                BoxLayout:
+                    orientation: 'vertical'
 
-<login_page>
-    FloatLayout:
+                    MDToolbar:
+                        title: "Screen 2"
+                        elevation: 10
+                        left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
+                        md_bg_color: app.theme_cls.primary_color
 
-        canvas.before:
-            Color:
-                rgb: (0,0,.5)
-            Rectangle:
-                pos: self.pos
-                size: self.size
+                    Button:
+                        text: "Test"
+                        on_release: ScreenManager.current = "Screen 1"
 
 
+        MDNavigationDrawer:
+            id: nav_drawer
 
-        MDTextFieldRound:
-            id: username_field
-            icon_left: 'account'
-            icon_right: ''
-            hint_text: "Enter a Username"
-            hint_text_color: (1,1,1,1)
-            foreground_color:
-            pos_hint: {"x": 0.3, "top": 1.5}
-            size_hint: .4, 1
-
-        MDFillRoundFlatButton:
-            id: name_field_button
-            text: "CONNECT"
-            bold: True
-            theme_text_colour: 'Custom'
-            text_color: (1,1,1,1)
-            pos_hint: {"x": 0.3, "top": .4}
-            size_hint: .4, .09
-            on_release: root.send_username(username_field.text), root.next_page()
-
-<home_page>
+            ContentNavigationDrawer:
+                id: content_drawer
 
 
 

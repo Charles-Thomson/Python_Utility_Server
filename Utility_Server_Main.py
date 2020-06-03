@@ -6,8 +6,10 @@
 import kivy
 
 from kivy import Config
+from kivy.properties import StringProperty
 from kivy.uix.boxlayout import BoxLayout
-from kivymd.theming import ThemeManager
+from kivymd.theming import ThemeManager, ThemableBehavior
+from kivymd.uix.list import OneLineIconListItem, MDList
 from kivymd.uix.navigationdrawer import NavigationLayout
 
 Config.set('graphics', 'multisamples', '0')
@@ -28,12 +30,6 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 kivy.require('1.11.1')
 
 
-class Navigation_Test(NavigationLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-
 class Header_Bar(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -45,7 +41,7 @@ class Header_Action_Bar(BoxLayout):
 
 
 # the first page of the app, (enter the users name page)
-class login_page(FloatLayout):
+class login_page(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -62,33 +58,44 @@ class home_page(NavigationLayout):
     pass
 
 
-class Utility_App(MDApp):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.theme_cls.primary_palette = "Blue"
+class ContentNavigationDrawer(BoxLayout):
+    pass
 
-        self.screen_manager = ScreenManager()
+
+class ItemDrawer(OneLineIconListItem):
+    icon = StringProperty()
+
+
+class DrawerList(ThemableBehavior, MDList):
+    def set_color_item(self, instance_item):
+        """Called when tap on a menu item."""
+
+        # Set the color of the icon and text for the menu item.
+        for item in self.children:
+            if item.text_color == self.theme_cls.primary_color:
+                item.text_color = self.theme_cls.text_color
+                break
+        instance_item.text_color = self.theme_cls.primary_color
+
+
+class Utility_App(MDApp):
 
     def build(self):
-        self.theme_cls.primary_palette = "Blue"
+        pass
 
-        # Start the screen manager
-
-        # login page
-        self.login_page = login_page()
-        screen = Screen(name="login_page")
-        screen.add_widget(self.login_page)
-        self.screen_manager.add_widget(screen)
-
-
-        # home page
-        self.home_page = home_page()
-        screen = Screen(name="home_page")
-        screen.add_widget(self.home_page)
-        self.screen_manager.add_widget(screen)
-
-        # Return the screen manager
-        return self.screen_manager
+    def on_start(self):
+        icons_item = {
+            "folder": "Help",
+            "account-multiple": "Chat Room",
+            "star": "Hang Man",
+            "history": "Suffix Calculator",
+            "checkbox-marked": "Shared with me",
+            "upload": "Upload",
+        }
+        for icon_name in icons_item.keys():
+            self.root.ids.content_drawer.ids.md_list.add_widget(
+                ItemDrawer(icon=icon_name, text=icons_item[icon_name])
+            )
 
 
 # Run the application if this file is run
