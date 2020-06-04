@@ -6,7 +6,7 @@
 import kivy
 
 from kivy import Config
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.theming import ThemeManager, ThemableBehavior
 from kivymd.uix.list import OneLineIconListItem, MDList
@@ -16,8 +16,7 @@ Config.set('graphics', 'multisamples', '0')
 
 from kivy.app import App
 from kivymd.app import MDApp
-from Network import Utility_Client as Client
-
+from Network import Utility_Client as Client, Utility_Client
 
 # ****
 # Kivy Imports
@@ -59,7 +58,13 @@ class home_page(NavigationLayout):
 
 
 class ContentNavigationDrawer(BoxLayout):
-    pass
+    screen_manager = ObjectProperty()
+    nav_drawer = ObjectProperty()
+
+    # Called when the button is pressed - work out the selection assignment
+    def utility_button_selection(self, selection):
+        Utility_Client.utility_handling(selection)
+
 
 
 class ItemDrawer(OneLineIconListItem):
@@ -84,18 +89,13 @@ class Utility_App(MDApp):
         pass
 
     def on_start(self):
-        icons_item = {
-            "folder": "Help",
-            "account-multiple": "Chat Room",
-            "star": "Hang Man",
-            "history": "Suffix Calculator",
-            "checkbox-marked": "Shared with me",
-            "upload": "Upload",
-        }
-        for icon_name in icons_item.keys():
-            self.root.ids.content_drawer.ids.md_list.add_widget(
-                ItemDrawer(icon=icon_name, text=icons_item[icon_name])
-            )
+        pass
+
+
+    def send_username(self, username_field):
+        username = username_field
+        print(username)
+        Client.send_user_name(username)
 
 
 # Run the application if this file is run

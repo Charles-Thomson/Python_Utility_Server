@@ -40,8 +40,32 @@
 
     ScrollView:
 
-        DrawerList:
-            id: md_list
+        MDList:
+            OneLineListItem:
+                text: "Home"
+                on_press:
+                    root.nav_drawer.toggle_nav_drawer()
+                    root.screen_manager.current = "main_page"
+
+
+            OneLineListItem:
+                text: "Suffix Calculator"
+                on_press:
+                    root.nav_drawer.toggle_nav_drawer()
+                    root.screen_manager.current = "suffix_calculator_page"
+                    # root.utility_button_selection("Suffix Calculator")
+
+            OneLineListItem:
+                text: "Hang Man"
+                on_press:
+                    root.nav_drawer.toggle_nav_drawer()
+                    root.screen_manager.current = "hang_man_page"
+
+            OneLineListItem:
+                text: "Chat Room"
+                on_press:
+                    root.nav_drawer.toggle_nav_drawer()
+                    root.screen_manager.current = "chat_room_page"
 
 
 
@@ -53,9 +77,61 @@ Screen:
             id: ScreenManager
 
             Screen:  # Screen being defined ?
-                name: "Screen 1"
+                name: "login_page"
 
-                BoxLayout:
+                FloatLayout:
+                    canvas.before:
+                        Color:
+                            rgb: (1,1,1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    orientation: 'vertical'
+
+                    MDToolbar:
+                        title: "Python Utility Server"
+                        elevation: 10
+                        # left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
+                        md_bg_color: app.theme_cls.primary_color
+                        pos_hint: {"x": 0, "top": 1}
+
+
+                    MDTextField:
+                        id: username_field
+                        color_mode: "primary"
+                        hint_text: "Enter a Username"
+                        helper_text: "enter"
+                        pos_hint: {"x": 0.3, "top": .6}
+                        size_hint: .4, .1
+                        halign: 'left'
+                        required: True
+
+
+                    MDFillRoundFlatButton:
+                        id: name_field_button
+                        text: "CONNECT"
+                        bold: True
+                        theme_text_colour: 'Custom'
+                        text_color: (1,1,1,1)
+                        pos_hint: {"x": 0.3, "top": .4}
+                        size_hint: .4, .09
+
+                        # New button behaviour structure
+                        on_release: app.send_username(username_field.text)
+                        on_release: ScreenManager.current = "main_page" # remove later so the field is required to continue
+
+
+            Screen:
+                name: "main_page"
+                FloatLayout:
+                    canvas.before:
+                        Color:
+                            rgb: (1,1,1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
                     orientation: 'vertical'
 
                     MDToolbar:
@@ -63,32 +139,102 @@ Screen:
                         elevation: 10
                         left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
                         md_bg_color: app.theme_cls.primary_color
+                        pos_hint: {"x": 0, "top": 1}
 
+                    Label:
+                        pos_hint: {"x": -.3, "top": 1.3}
+                        text: "Hello, and welcome to the utility server "
+                        color: 0,0,0,1
+                        # text_size: self.size
 
-                    Button:
-                        text: "Test"
-                        on_release: ScreenManager.current = "Screen 2"
             Screen:
-                name: "Screen 2"
-                BoxLayout:
+                name: "suffix_calculator_page"
+                FloatLayout:
+                    canvas.before:
+                        Color:
+                            rgb: (1,1,1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
                     orientation: 'vertical'
 
                     MDToolbar:
-                        title: "Screen 2"
+                        title: "Python Utility Server - Suffix Calculator"
                         elevation: 10
                         left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
                         md_bg_color: app.theme_cls.primary_color
+                        pos_hint: {"x": 0, "top": 1}
 
-                    Button:
-                        text: "Test"
-                        on_release: ScreenManager.current = "Screen 1"
+                    Label:
+                        pos_hint: {"x": -.3, "top": 1.3}
+                        text: "Suffix calculator "
+                        color: 0,0,0,1
+                        # text_size: self.size
+
+            Screen:
+                name: "hang_man_page"
+                FloatLayout:
+                    canvas.before:
+                        Color:
+                            rgb: (1,1,1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    orientation: 'vertical'
+
+                    MDToolbar:
+                        title: "Python Utility Server - Hang Man"
+                        elevation: 10
+                        left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
+                        md_bg_color: app.theme_cls.primary_color
+                        pos_hint: {"x": 0, "top": 1}
+
+                    Label:
+                        pos_hint: {"x": -.3, "top": 1.3}
+                        text: "Hang Man"
+                        color: 0,0,0,1
+                        # text_size: self.size
+
+            Screen:
+                name: "chat_room_page"
+                FloatLayout:
+                    canvas.before:
+                        Color:
+                            rgb: (1,1,1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    orientation: 'vertical'
+
+                    MDToolbar:
+                        title: "Python Utility Server - Chat Room"
+                        elevation: 10
+                        left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
+                        md_bg_color: app.theme_cls.primary_color
+                        pos_hint: {"x": 0, "top": 1}
+
+                    Label:
+                        pos_hint: {"x": -.3, "top": 1.3}
+                        text: "chat room"
+                        color: 0,0,0,1
+                        # text_size: self.size
+
+
+
+
 
 
         MDNavigationDrawer:
             id: nav_drawer
 
+
+
             ContentNavigationDrawer:
-                id: content_drawer
+                screen_manager: ScreenManager
+                nav_drawer: nav_drawer
 
 
 

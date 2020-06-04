@@ -48,17 +48,18 @@ def send_user_name(username=""):
     print(username)
     message = USER_NAME_TAG + username
     send_msg(message)
-    utility_handling(username)
+    # utility_handling()
 
 
+# This will be called by the on button press of each navigation draw button
 # Main process for client, handles selection of util
-def utility_handling(username=''):
-    print(f'\n[WELCOME] Hello {username} Welcome to the Python Utility Server ')
+def utility_handling(utility_selection):
+   #  print(f'\n[WELCOME] Hello {username} Welcome to the Python Utility Server ')
     print(f"[ACTIVE THREADS] {threading.activeCount()}")
-
+    print("in the utility selection")
     while True:
 
-        utility_selection = input("\nEnter the name of the Utility you want to use or type 'help' for help:  ")
+        # utility_selection = input("\nEnter the name of the Utility you want to use or type 'help' for help:  ")
         if utility_selection == 'help':
             print(f'[HELP] The currently available utilitys are :  {AVAILABLE_UTILITY} ')
             continue

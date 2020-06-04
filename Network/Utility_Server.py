@@ -42,8 +42,10 @@ CONNECTED_USERS = []
 def handle_client(connection, address):
     # Print when new connection is made
     print(f"[NEW_SERVER_CONNECTION] {address} connected ")
+    print("in handle_client  ")
 
     while True:
+
         msg_length = connection.recv(HEADER).decode(FORMAT)  # Blocking until msg received from client -
         # The length of the message is equal to the header value
         # Decode by FORMAT as each msg is encoded

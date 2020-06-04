@@ -6,7 +6,9 @@
 
 - check if there is a better solution to the receiving of messages for the hang man game
 
-- Refactoring to work with the kivy ui
+- May need to break down the main loop into methods to be called by th UI
+
+- Need to find a way to pass the response to the UI pages
 
 **** Server ****
 
@@ -15,6 +17,8 @@
 
 
 **** Hang Man ****
+
+- Bug with the random word generator
 
 - The players_attempts on the Hang Man game is being shared across clients
 
@@ -29,15 +33,10 @@
 
 **** UI ****
 
-- Initial frame work set up
-
-- Moving elements over to function with the kivy ui elements
+- Create the rest of the UI pages
 
 - Known issue: Anything that prints to the command line currently breaks the kivy build
 
--  Main navigation page needs to be created
-
-- UI needs to be created for each utility
 
 ****BACK LOG****
 
