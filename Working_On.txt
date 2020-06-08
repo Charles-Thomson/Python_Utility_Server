@@ -4,13 +4,13 @@
 
 **** Client ****
 
-- check if there is a better solution to the receiving of messages for the hang man game
+Mass refactoring of methods
 
-- May need to break down the main loop into methods to be called by th UI
-
-- Need to find a way to pass the response to the UI pages
+- There will only be a send and receive method in the the class following the refactoring
 
 **** Server ****
+
+- Changes may be made to add a tag to the returned message of the same type as the sent msg
 
 
 **** Calculator ****
@@ -33,7 +33,7 @@
 
 **** UI ****
 
-- Create the rest of the UI pages
+- Find a way to post the result from the server to the UI - scroll view maybe an option
 
 - Known issue: Anything that prints to the command line currently breaks the kivy build
 

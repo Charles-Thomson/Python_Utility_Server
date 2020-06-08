@@ -12,6 +12,8 @@ from kivymd.theming import ThemeManager, ThemableBehavior
 from kivymd.uix.list import OneLineIconListItem, MDList
 from kivymd.uix.navigationdrawer import NavigationLayout
 
+from Network import Utility_Client
+
 Config.set('graphics', 'multisamples', '0')
 
 from kivy.app import App
@@ -85,10 +87,16 @@ class DrawerList(ThemableBehavior, MDList):
 
 class Utility_App(MDApp):
 
+    server_result = StringProperty()
+
+    result_text = server_result
+
     def build(self):
+
         pass
 
     def on_start(self):
+
         pass
 
 
@@ -96,6 +104,14 @@ class Utility_App(MDApp):
         username = username_field
         print(username)
         Client.send_user_name(username)
+
+    def pass_suffix_msg(self, input_field):
+        msg = input_field
+        message = "[SUFFIX_CALCULATOR]" + msg
+        print(message)
+        result = Client.send_msg(message)
+        print(result)
+        self.server_result = result
 
 
 # Run the application if this file is run

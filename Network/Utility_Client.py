@@ -7,6 +7,8 @@ import sys
 import threading
 
 
+
+
 # ****
 # Const
 # ****
@@ -36,6 +38,8 @@ CHAT_ROOM_TAG = '[CHAT_ROOM]'
 EXIT_CHAT_ROOM_TAG = '[EXIT_CHAT_ROOM]'
 USER_NAME_TAG = '[USER_NAME]'
 
+RETURNED_RESULT = ""
+
 
 # Create the client socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,7 +52,8 @@ def send_user_name(username=""):
     print(username)
     message = USER_NAME_TAG + username
     send_msg(message)
-    # utility_handling()
+    #utility_selection = "Suffix Calculator"
+    #utility_handling(utility_selection)
 
 
 # This will be called by the on button press of each navigation draw button
@@ -116,6 +121,8 @@ def send_msg(message):
     else:
         print("Can't send an empty message")
 
+    return return_result()
+
 
 # Check to see if play again - for hang man only currelty
 def play_again_hang_man():
@@ -131,11 +138,18 @@ def play_again_hang_man():
         play_again_hang_man()
 
 
+def return_result():
+    global RETURNED_RESULT
+    server_result = client.recv(2048).decode(FORMAT)
+    RETURNED_RESULT = server_result
+    return server_result
+
+
 # Start and run the suffix calculator
 def suffix_calculator():
-    print('Welcome to the Polish Notation (Suffix) calculator')
+    #print('Welcome to the Polish Notation (Suffix) calculator')
     while True:
-        message = input('Enter a suffix equation : ')
+        message = input('Enter a suffix equation : ')  # <-- Change her for refactoring
 
         # Check to  see if the msg is empty
         if message:
@@ -144,7 +158,8 @@ def suffix_calculator():
         else:
             continue
 
-        result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
+        result = return_result()  # can change to use the fix length header thing
+
 
         if DISCONNECT_RESULT_MSG in result:  # If a disconnect msg is returned
             disconnect()
@@ -157,7 +172,8 @@ def suffix_calculator():
             print(f'{message} is not a valid equation')
             continue
         else:
-            print(f'The result is {result}')
+            pass
+            #print(f'The result is {result}')
 
 
 # Hang man game
