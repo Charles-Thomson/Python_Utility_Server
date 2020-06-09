@@ -6,7 +6,7 @@
 
 Mass refactoring of methods
 
-- There will only be a send and receive method in the the class following the refactoring
+- calculator and hang man methods moved over to new main(UI)
 
 **** Server ****
 
@@ -17,8 +17,6 @@ Mass refactoring of methods
 
 
 **** Hang Man ****
-
-- Bug with the random word generator
 
 - The players_attempts on the Hang Man game is being shared across clients
 
@@ -33,12 +31,18 @@ Mass refactoring of methods
 
 **** UI ****
 
-- Find a way to post the result from the server to the UI - scroll view maybe an option
+- create the chat room page
+
+- handling for !EXIT / !DISCONNECT
+
+- clear suffix calculator label when clicked off the page
+
+- check to see if the game object for hang man is still "alive" once the page changes
 
 - Known issue: Anything that prints to the command line currently breaks the kivy build
 
 
-****BACK LOG****
+
 
 
 

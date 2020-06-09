@@ -1,4 +1,3 @@
-
 # ****
 # Imports
 # ****
@@ -28,30 +27,19 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 
+
+# ****
+# TAGS
+# ****
+
+SUFFIX_TAG = '[SUFFIX_CALCULATOR]'
+HANG_MAN_TAG = '[HANG_MAN]'
+HANG_MAN_CREATION_TAG = '[HANG_MAN_CREATION]'
+CHAT_ROOM_TAG = '[CHAT_ROOM]'
+EXIT_CHAT_ROOM_TAG = '[EXIT_CHAT_ROOM]'
+USER_NAME_TAG = '[USER_NAME]'
+
 kivy.require('1.11.1')
-
-
-class Header_Bar(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-class Header_Action_Bar(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-# the first page of the app, (enter the users name page)
-class login_page(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def send_username(self, username_field):
-        username = username_field
-        # Client.send_user_name(username)
-
-    def next_page(self):
-        utility_app.screen_manager.current = 'home_page'
 
 
 # Home pae of the UI
@@ -66,7 +54,6 @@ class ContentNavigationDrawer(BoxLayout):
     # Called when the button is pressed - work out the selection assignment
     def utility_button_selection(self, selection):
         Utility_Client.utility_handling(selection)
-
 
 
 class ItemDrawer(OneLineIconListItem):
@@ -86,32 +73,81 @@ class DrawerList(ThemableBehavior, MDList):
 
 
 class Utility_App(MDApp):
+    suffix_calculator_server_result = StringProperty()
+    hang_man_server_result = StringProperty()
 
-    server_result = StringProperty()
+    user_name = StringProperty()
 
-    result_text = server_result
+    suffix_calculator_result_text = suffix_calculator_server_result  # set the result text in the suffix calculator
+    hang_man_result_text = hang_man_server_result
 
     def build(self):
-
         pass
 
     def on_start(self):
-
         pass
 
-
     def send_username(self, username_field):
-        username = username_field
-        print(username)
-        Client.send_user_name(username)
+        if username_field:
+            msg = username_field
+            message = USER_NAME_TAG + msg
+            print(message)
+            result = Client.send_msg(message)
+            print(result)
+            self.user_name = result
 
-    def pass_suffix_msg(self, input_field):
-        msg = input_field
-        message = "[SUFFIX_CALCULATOR]" + msg
+        else:
+            print("Enter a user name")
+
+    def pass_suffix_msg(self, suffix_calculator_input_field):
+        msg = suffix_calculator_input_field
+        message = SUFFIX_TAG + msg
         print(message)
         result = Client.send_msg(message)
         print(result)
-        self.server_result = result
+        printed_result = "\nThe result of :   " + suffix_calculator_input_field + "   =   " + result
+        self.suffix_calculator_server_result += printed_result
+
+    # Create the hang man game object
+    def create_hang_man(self):
+        message = HANG_MAN_CREATION_TAG
+
+        print(message)  # debug
+
+        result = Client.send_msg(message)
+
+        print("[CLIENT] Hang man started")  # debug
+
+        result = result.split("//")
+
+        printed_result = "\nThe word :   " + result[0] + "  Maximum number of attempts:  " + result[1]
+
+        self.hang_man_server_result += printed_result
+
+    # Pass the input to the hang man game object
+    def pass_hang_man_msg(self, hang_man_input_field):
+        msg = hang_man_input_field
+        message = HANG_MAN_TAG + msg
+
+        print(message)  # Debug
+
+        result = Client.send_msg(message)
+
+        print(result)  # Debug
+
+        result = result.split("//")
+
+        printed_result = "\nThe word :   " + result[0] + "  number of failed attempts  " + result[1]
+
+        if result[2] == '[GAME_WIN]':
+            printed_result = "\nCongratulations you won. The word is :  " + result[0]
+
+        if result[2] == "[GAME_LOSE]":
+            printed_result = "\nYou lost. The word is :  " + result[0]
+
+        self.hang_man_server_result += printed_result
+
+
 
 
 # Run the application if this file is run

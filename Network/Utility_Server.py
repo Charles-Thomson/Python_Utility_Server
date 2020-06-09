@@ -60,7 +60,9 @@ def handle_client(connection, address):
                 connected_user = (msg, address)
                 CONNECTED_USERS.append(connected_user)
                 user_name = msg
+                result = user_name
                 print(f'[SYSTEM_CONNECTED] The connected users are {CONNECTED_USERS}')
+                return_msg(connection, result,  msg)
 
             # If the disconnect msg is received
             if DISCONNECT_MSG in msg:  # If the DISCONNECT_MSG is received

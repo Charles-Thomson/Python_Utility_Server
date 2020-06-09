@@ -56,50 +56,6 @@ def send_user_name(username=""):
     #utility_handling(utility_selection)
 
 
-# This will be called by the on button press of each navigation draw button
-# Main process for client, handles selection of util
-def utility_handling(utility_selection):
-   #  print(f'\n[WELCOME] Hello {username} Welcome to the Python Utility Server ')
-    print(f"[ACTIVE THREADS] {threading.activeCount()}")
-    print("in the utility selection")
-    while True:
-
-        # utility_selection = input("\nEnter the name of the Utility you want to use or type 'help' for help:  ")
-        if utility_selection == 'help':
-            print(f'[HELP] The currently available utilitys are :  {AVAILABLE_UTILITY} ')
-            continue
-
-        if 'Suffix Calculator' in utility_selection:
-            print("Calculator chosen")
-            suffix_calculator()
-
-        if 'Hang Man' in utility_selection:
-            message = '[HANG_MAN_CREATION]'
-            send_msg(message)
-            hang_man()
-
-        if 'Chat Room' in utility_selection:
-            message = '[JOIN_CHAT_ROOM]'
-            send_msg(message)
-            # chat_room()
-
-            thread_listen = threading.Thread(target=listen, args=())
-            thread_listen.start()
-
-            chat_room()
-
-        if DISCONNECT_MSG in utility_selection:  # If a disconnect msg is returned
-            disconnect()
-
-        else:
-            print(f'[SYSTEM] {utility_selection} is not a utility - the available utilitys are {AVAILABLE_UTILITY}')
-            continue
-
-        result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
-        if DISCONNECT_RESULT_MSG in result:  # If a disconnect msg is returned
-            disconnect()
-
-
 # Handling the !DISCONNECT requests
 def disconnect():
     print('[DISCONNECTED] You have been disconnected')
@@ -143,81 +99,6 @@ def return_result():
     server_result = client.recv(2048).decode(FORMAT)
     RETURNED_RESULT = server_result
     return server_result
-
-
-# Start and run the suffix calculator
-def suffix_calculator():
-    #print('Welcome to the Polish Notation (Suffix) calculator')
-    while True:
-        message = input('Enter a suffix equation : ')  # <-- Change her for refactoring
-
-        # Check to  see if the msg is empty
-        if message:
-            message = SUFFIX_TAG + message  # Add a pre-message for the server
-            send_msg(message)  # Need to allow the server to first create the hangman object
-        else:
-            continue
-
-        result = return_result()  # can change to use the fix length header thing
-
-
-        if DISCONNECT_RESULT_MSG in result:  # If a disconnect msg is returned
-            disconnect()
-
-        elif EXIT_UTILITY_MSG in result:
-            print('\n[SYSTEM] Exiting Utility')
-            utility_handling()
-
-        elif INPUT_ERROR_MSG in result:  # If there is an input error msg returned
-            print(f'{message} is not a valid equation')
-            continue
-        else:
-            pass
-            #print(f'The result is {result}')
-
-
-# Hang man game
-def hang_man():
-    result = client.recv(2048).decode(FORMAT)  # Receive the the hidden word and mxa_attempts
-    result = result.split("//")  # Split the return string
-    print('Welcome to Hang Man')
-    print(
-        f'The word is: {result[0]}   The maximum number of attempts is: {result[1]}')  # Print, take elements from list locations
-    word = result[2]
-
-    while True:
-        message = input("\nMake a guess:   ")
-
-        # Check to  see if the msg is empty
-        if message:
-            message = HANG_MAN_TAG + message  # Add a pre-message for the server
-            send_msg(message)  # Need to allow the server to first create the hangman object
-        else:
-            continue
-
-        result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
-
-        if DISCONNECT_RESULT_MSG in result:  # If a disconnect msg is returned
-            disconnect()
-
-        elif EXIT_UTILITY_MSG in result:
-            print('\n[SYSTEM] Exiting Utility')
-            break
-
-        else:
-            result = result.split("//")  # Split the result - giving a list
-            print(f'The word: {result[0]}  Number of failed Attempts: {result[1]}')
-
-            if result[2] == "[GAME_WIN]":  # List element 2 is a tag - return result depending on the tag
-                print(f'\n[SYSTEM - GAME_RESULT] Congratulations you won. The word is {result[0]}')
-                play_again_hang_man()
-
-            if result[2] == "[GAME_LOSE]":
-                print(f'\n[SYSTEM - GAME_RESULT] You lost. The word was {word}')
-                play_again_hang_man()
-
-    utility_handling()
-
 
 # Create a thread to start listening
 def start_listening():
