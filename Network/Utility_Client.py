@@ -6,6 +6,10 @@ import socket
 import sys
 import threading
 
+from nltk.lm.vocabulary import _
+
+import Utility_Server_Main as USM
+
 
 
 
@@ -52,8 +56,6 @@ def send_user_name(username=""):
     print(username)
     message = USER_NAME_TAG + username
     send_msg(message)
-    #utility_selection = "Suffix Calculator"
-    #utility_handling(utility_selection)
 
 
 # Handling the !DISCONNECT requests
@@ -77,7 +79,7 @@ def send_msg(message):
     else:
         print("Can't send an empty message")
 
-    return return_result()
+    # return return_result()
 
 
 # Check to see if play again - for hang man only currelty
@@ -100,9 +102,9 @@ def return_result():
     RETURNED_RESULT = server_result
     return server_result
 
+
 # Create a thread to start listening
 def start_listening():
-
     print("[SYSTEM] in Start Listening ")
     thread = threading.Thread(target=listen, args=())
     thread.start()
@@ -114,37 +116,10 @@ def listen():
     print("[SYSTEM] listen thread running")
     while True:
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
-
-        if EXIT_UTILITY_MSG in result:
-            print('\n[SYSTEM] Exiting Utility')
-            sys.exit("[CLOSE_CHAT_THREAD]")  # Closes the thread
-
-        else:
-            print(f'{result}')
-
-
-def chat_room():
-
-    print("\n[CLIENT] welcome to the chat room")
-
-    while True:
-        message = input()
-
-        if message:
-            message = CHAT_ROOM_TAG + message  # Add a pre-message for the server
-            send_msg(message)  # Need to allow the server to first create the hangman object
-            if EXIT_UTILITY_MSG in message:
-                message = EXIT_CHAT_ROOM_TAG
-                send_msg(message)
-                print('\n[SYSTEM-CHAT_ROOM] Exiting Utility')
-                break
-
-        else:
-            continue
-
-    utility_handling()
+        print(f'[CLIENT_MSG] message received from the server is: {result}')
+        USM.Utility_App.update_chat(_, result)
 
 
 if __name__ == "__main__":
-    username = input("Enter Username: ")
-    send_user_name(username)
+    pass
+

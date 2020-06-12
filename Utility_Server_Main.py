@@ -13,6 +13,7 @@ from kivymd.uix.navigationdrawer import NavigationLayout
 
 from Network import Utility_Client
 
+
 Config.set('graphics', 'multisamples', '0')
 
 from kivy.app import App
@@ -28,6 +29,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 
 
 
+
 # ****
 # TAGS
 # ****
@@ -38,13 +40,9 @@ HANG_MAN_CREATION_TAG = '[HANG_MAN_CREATION]'
 CHAT_ROOM_TAG = '[CHAT_ROOM]'
 EXIT_CHAT_ROOM_TAG = '[EXIT_CHAT_ROOM]'
 USER_NAME_TAG = '[USER_NAME]'
+JOIN_CHAT_ROOM_TAG = '[JOIN_CHAT_ROOM]'
 
 kivy.require('1.11.1')
-
-
-# Home pae of the UI
-class home_page(NavigationLayout):
-    pass
 
 
 class ContentNavigationDrawer(BoxLayout):
@@ -73,13 +71,16 @@ class DrawerList(ThemableBehavior, MDList):
 
 
 class Utility_App(MDApp):
+
     suffix_calculator_server_result = StringProperty()
     hang_man_server_result = StringProperty()
+    chat_room_server_result = StringProperty()
 
     user_name = StringProperty()
 
     suffix_calculator_result_text = suffix_calculator_server_result  # set the result text in the suffix calculator
     hang_man_result_text = hang_man_server_result
+    chat_room_result_text = chat_room_server_result
 
     def build(self):
         pass
@@ -147,7 +148,29 @@ class Utility_App(MDApp):
 
         self.hang_man_server_result += printed_result
 
+    # Call the method in client to start a new listening thread
+    def call_start_listening(self):
+        Client.start_listening()
 
+    # send message to join the chat room
+    def join_chat_room(self):
+        message = JOIN_CHAT_ROOM_TAG
+        Client.send_msg(message)
+
+    # Send a new message
+    def pass_chat_room_msg(self, chat_room_input_field):
+        msg = chat_room_input_field
+        message = CHAT_ROOM_TAG + msg
+        # self.chat_room_server_result += message
+        Client.send_msg(message)
+
+    # Update the chat label when called from the client
+    def update_chat(self, result):
+
+        print(f'[CHAT_UPDATE] Updating chat inside Utility_app with: {result}')
+        print(type(result))
+        self = self
+        self.chat_room_result_text = result
 
 
 # Run the application if this file is run

@@ -102,7 +102,7 @@ def handle_client(connection, address):
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
             if '[CHAT_ROOM]' in msg:
-                Chat_Room.handle_new_message(msg, connection, user_name)
+                Chat_Room.handle_new_message(msg, connection)
 
             if '[EXIT_CHAT_ROOM]' in msg:
                 Chat_Room.disconnect_client(connection)

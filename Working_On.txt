@@ -22,6 +22,8 @@ Mass refactoring of methods
 
 - Improve overall robustness
 
+- final word on lose is not shown , currently shows hidden word
+
 
 **** Chat Room ****
 
