@@ -4,17 +4,23 @@
 
 **** Client ****
 
-Mass refactoring of methods
+- Refactor the handling of incoming messages, use a callback? to call the method handling -
 
-- calculator and hang man methods moved over to new main(UI)
+- "Method handling" will take care of the new message and format it based of each util then pass to the "main"
+
+- need handling for username
 
 **** Server ****
 
+- need handling for username
+
 - Changes may be made to add a tag to the returned message of the same type as the sent msg
 
+- Look into case switch for the incoming msg handling
 
 **** Calculator ****
 
+- Not functioning during refactoring
 
 **** Hang Man ****
 
@@ -24,6 +30,7 @@ Mass refactoring of methods
 
 - final word on lose is not shown , currently shows hidden word
 
+- Not functioning during refactoring
 
 **** Chat Room ****
 
@@ -33,11 +40,7 @@ Mass refactoring of methods
 
 **** UI ****
 
-- create the chat room page
-
 - handling for !EXIT / !DISCONNECT
-
-- clear suffix calculator label when clicked off the page
 
 - check to see if the game object for hang man is still "alive" once the page changes
 
