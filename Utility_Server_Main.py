@@ -82,6 +82,8 @@ class Utility_App(MDApp):
     hang_man_result_text = hang_man_server_result
     chat_room_result_text = chat_room_server_result
 
+
+
     def build(self):
         pass
 
@@ -150,7 +152,7 @@ class Utility_App(MDApp):
 
     # Call the method in client to start a new listening thread
     def call_start_listening(self):
-        Client.start_listening()
+        Client.start_listening(self.update_chat)
 
     # send message to join the chat room
     def join_chat_room(self):
@@ -161,6 +163,8 @@ class Utility_App(MDApp):
     def pass_chat_room_msg(self, chat_room_input_field):
         msg = chat_room_input_field
         message = CHAT_ROOM_TAG + msg
+        print(message)
+        # print(f'{self} : send message self')
         # self.chat_room_server_result += message
         Client.send_msg(message)
 
@@ -168,9 +172,8 @@ class Utility_App(MDApp):
     def update_chat(self, result):
 
         print(f'[CHAT_UPDATE] Updating chat inside Utility_app with: {result}')
-        print(type(result))
-        self = self
-        self.chat_room_result_text = result
+        result = "\n" + result
+        self.chat_room_server_result += result
 
 
 # Run the application if this file is run

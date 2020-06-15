@@ -79,9 +79,6 @@ def send_msg(message):
     else:
         print("Can't send an empty message")
 
-    # return return_result()
-
-
 # Check to see if play again - for hang man only currelty
 def play_again_hang_man():
     replay = input("Do you want to play again? (y/n)  :   ")
@@ -104,20 +101,21 @@ def return_result():
 
 
 # Create a thread to start listening
-def start_listening():
+def start_listening(incoming_message_callback):
     print("[SYSTEM] in Start Listening ")
-    thread = threading.Thread(target=listen, args=())
+    thread = threading.Thread(target=listen, args=(incoming_message_callback,_), daemon=True)
     thread.start()
 
 
 # This is in it's own thread
-def listen():
+def listen(incoming_message_callback, _):
 
     print("[SYSTEM] listen thread running")
     while True:
         result = client.recv(2048).decode(FORMAT)  # can change to use the fix length header thing
         print(f'[CLIENT_MSG] message received from the server is: {result}')
-        USM.Utility_App.update_chat(_, result)
+        incoming_message_callback(result)
+
 
 
 if __name__ == "__main__":
