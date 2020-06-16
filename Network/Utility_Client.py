@@ -117,7 +117,6 @@ def listen(incoming_message_callback, _):
         incoming_message_callback(result)
 
 
-
 if __name__ == "__main__":
     pass
 

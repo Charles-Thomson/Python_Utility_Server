@@ -71,12 +71,12 @@ class DrawerList(ThemableBehavior, MDList):
 
 
 class Utility_App(MDApp):
-
+    user_name_server_result = StringProperty()
     suffix_calculator_server_result = StringProperty()
     hang_man_server_result = StringProperty()
     chat_room_server_result = StringProperty()
 
-    user_name = StringProperty()
+    user_name = user_name_server_result
 
     suffix_calculator_result_text = suffix_calculator_server_result  # set the result text in the suffix calculator
     hang_man_result_text = hang_man_server_result
@@ -95,68 +95,42 @@ class Utility_App(MDApp):
             msg = username_field
             message = USER_NAME_TAG + msg
             print(message)
-            result = Client.send_msg(message)
-            print(result)
-            self.user_name = result
+            Client.send_msg(message)
+
 
         else:
             print("Enter a user name")
-
-    def pass_suffix_msg(self, suffix_calculator_input_field):
-        msg = suffix_calculator_input_field
-        message = SUFFIX_TAG + msg
-        print(message)
-        result = Client.send_msg(message)
-        print(result)
-        printed_result = "\nThe result of :   " + suffix_calculator_input_field + "   =   " + result
-        self.suffix_calculator_server_result += printed_result
 
     # Create the hang man game object
     def create_hang_man(self):
         message = HANG_MAN_CREATION_TAG
 
-        print(message)  # debug
-
-        result = Client.send_msg(message)
+        Client.send_msg(message)
 
         print("[CLIENT] Hang man started")  # debug
 
-        result = result.split("//")
+    # Call the method in client to start a new listening thread
+    def call_start_listening(self):
+        Client.start_listening(self.incoming_message_Handling)
 
-        printed_result = "\nThe word :   " + result[0] + "  Maximum number of attempts:  " + result[1]
+    # send message to join the chat room
+    def join_chat_room(self):
+        message = JOIN_CHAT_ROOM_TAG
+        Client.send_msg(message)
 
-        self.hang_man_server_result += printed_result
+    # ***** MESSAGE PASSING *****
+
+    def pass_suffix_msg(self, suffix_calculator_input_field):
+        msg = suffix_calculator_input_field
+        message = SUFFIX_TAG + msg
+        print(message)
+        Client.send_msg(message)
 
     # Pass the input to the hang man game object
     def pass_hang_man_msg(self, hang_man_input_field):
         msg = hang_man_input_field
         message = HANG_MAN_TAG + msg
-
         print(message)  # Debug
-
-        result = Client.send_msg(message)
-
-        print(result)  # Debug
-
-        result = result.split("//")
-
-        printed_result = "\nThe word :   " + result[0] + "  number of failed attempts  " + result[1]
-
-        if result[2] == '[GAME_WIN]':
-            printed_result = "\nCongratulations you won. The word is :  " + result[0]
-
-        if result[2] == "[GAME_LOSE]":
-            printed_result = "\nYou lost. The word is :  " + result[0]
-
-        self.hang_man_server_result += printed_result
-
-    # Call the method in client to start a new listening thread
-    def call_start_listening(self):
-        Client.start_listening(self.update_chat)
-
-    # send message to join the chat room
-    def join_chat_room(self):
-        message = JOIN_CHAT_ROOM_TAG
         Client.send_msg(message)
 
     # Send a new message
@@ -164,16 +138,54 @@ class Utility_App(MDApp):
         msg = chat_room_input_field
         message = CHAT_ROOM_TAG + msg
         print(message)
-        # print(f'{self} : send message self')
-        # self.chat_room_server_result += message
         Client.send_msg(message)
 
-    # Update the chat label when called from the client
-    def update_chat(self, result):
+    # ****** Label Updates *****
 
+    # Update the Suffix label
+    def Update_Suffix_Calculator(self, result):
+        print(result)
+        printed_result = "The result :  " + result
+        self.suffix_calculator_server_result += printed_result
+
+    # Update the Hangman label
+    def Update_Hang_Man(self, result):
+        result = result.split("//")
+        printed_result = "\nThe word :   " + result[0] + "  number of failed attempts  " + result[1]
+
+        if result[2] == '[GAME_WIN]':
+            printed_result = "\nCongratulations you won. The word is :  " + result[0]
+        if result[2] == "[GAME_LOSE]":
+            printed_result = "\nYou lost. The word is :  " + result[0]
+
+        self.hang_man_server_result += printed_result
+
+    # Update the chat label
+    def Update_Chat(self, result):
+        result = result.split("//")
+        printed_result = result[0] + " : " + result[1]
         print(f'[CHAT_UPDATE] Updating chat inside Utility_app with: {result}')
-        result = "\n" + result
-        self.chat_room_server_result += result
+        printed_result = "\n" + printed_result
+        self.chat_room_server_result += printed_result
+
+    # Incoming message handling
+    def incoming_message_Handling(self, result):
+
+        if USER_NAME_TAG in result:
+            result = result.replace('[USER_NAME]', '')
+            self.user_name_server_result = result
+
+        if SUFFIX_TAG in result:
+            result = result.replace('[SUFFIX_CALCULATOR]', '')
+            self.Update_Suffix_Calculator(result)
+
+        if HANG_MAN_TAG in result:
+            result = result.replace('[HANG_MAN]', '')
+            self.Update_Hang_Man(result)
+
+        if CHAT_ROOM_TAG in result:
+            result = result.replace('[CHAT_ROOM]', '')
+            self.Update_Chat(result)
 
 
 # Run the application if this file is run

@@ -26,14 +26,16 @@ def disconnect_client(connection):
 
 
 # send the new message out to the other clients
-def handle_new_message(msg, connection):
+def handle_new_message(msg, connection, user_name):
     msg = msg.replace('[CHAT_ROOM]', '')  # Strip the tag
     current_chat.append(msg)  # Debug
     print(f'[CURRENT_CHAT] {current_chat}')
     user = connection  # The senders connection
     # msg = msg  # Add the senders username to the returning msg
+    msg = "[CHAT_ROOM]" + user_name + "//" + msg
     for client_socket in clients:
         #if client_socket != user:
+        print(msg)
         bytes_msg = msg.encode()
         print("msg encoded")
         client_socket.send(bytes_msg)

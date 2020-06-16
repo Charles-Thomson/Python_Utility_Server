@@ -68,7 +68,7 @@
                     root.nav_drawer.toggle_nav_drawer()
                     root.screen_manager.current = "chat_room_page"
                     app.join_chat_room()
-                    app.call_start_listening()
+
 
 
 
@@ -121,6 +121,7 @@ Screen:
                         size_hint: .4, .09
 
                         # New button behaviour structure
+                        on_release: app.call_start_listening()
                         on_release: app.send_username(username_field.text)
                         on_release: ScreenManager.current = "main_page" # remove later so the field is required to continue
 
@@ -138,7 +139,7 @@ Screen:
                     orientation: 'vertical'
 
                     MDToolbar:
-                        title: "Python Utility Server"
+                        title: "Python Utility Server - Home "
                         elevation: 10
                         left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
                         md_bg_color: app.theme_cls.primary_color
