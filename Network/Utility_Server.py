@@ -6,6 +6,7 @@ import socket
 import threading
 from Utility import Run_Utility as Run
 from Utility import Chat_Room
+from Utility import Message_Tags as TAG
 import sys
 
 sys.path.insert(1, 'PycharmProjects/Python_Utility_Server/Utility/Polish_Notation')
@@ -23,22 +24,6 @@ PORT = 5060  # Port
 SERVER = socket.gethostbyname(socket.gethostname())  # Get the ip of this device to host the server
 ADDRESS = (SERVER, PORT)  # Address is the server IP and the PORT number being used
 FORMAT = 'utf-8'  # The msg encode as
-
-DISCONNECT_MSG = "!DISCONNECT"  # For clean disconnection of client
-EXIT_UTILITY_MSG = "!EXIT"  # Exit out of current utility
-
-
-# ****
-# Message Tags
-# ****
-
-SUFFIX_TAG = '[SUFFIX_CALCULATOR]'
-HANG_MAN_TAG = '[HANG_MAN]'
-HANG_MAN_CREATION_TAG = '[HANG_MAN_CREATION]'
-CHAT_ROOM_TAG = '[CHAT_ROOM]'
-EXIT_CHAT_ROOM_TAG = '[EXIT_CHAT_ROOM]'
-USER_NAME_TAG = '[USER_NAME]'
-JOIN_CHAT_ROOM_TAG = '[JOIN_CHAT_ROOM]'
 
 # Create the server socket - socket family (Type) AF_INET - SOCK_STREAM is streaming data through the socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -67,7 +52,7 @@ def handle_client(connection, address):
             msg_length = int(msg_length)  # convert to int
             msg = connection.recv(msg_length).decode(FORMAT)  # The actual msg is of length msg_length(decoded HEADER)
 
-            if USER_NAME_TAG in msg:  # If the DISCONNECT_MSG is received
+            if TAG.USER_NAME_TAG in msg:  # If the DISCONNECT_MSG is received
                 msg = msg.replace('[USER_NAME]', '')
                 print(f'[SERVER] {msg} has connected ')
                 connected_user = (msg, address)
@@ -78,48 +63,51 @@ def handle_client(connection, address):
                 return_msg(connection, result,  msg)
 
             # If the disconnect msg is received
-            if DISCONNECT_MSG in msg:  # If the DISCONNECT_MSG is received
+            if TAG.DISCONNECT_MSG in msg:  # If the DISCONNECT_MSG is received
                 print(f'[DISCONNECT] {address} has disconnected')
                 result = '[DISCONNECT]'
                 return_msg(connection, result,  msg)
                 break
 
-            if EXIT_UTILITY_MSG in msg:
+            if TAG.EXIT_UTILITY_MSG in msg:
                 print(f'\n[EXIT_UTILITY] {address} has exited the current utility')
-                result = EXIT_UTILITY_MSG
+                result = TAG.EXIT_UTILITY_MSG
                 return_msg(connection, result, msg)
                 continue
 
-            if HANG_MAN_CREATION_TAG in msg:
+            if TAG.HANG_MAN_CREATION_TAG in msg:
                 hang_man_obj = Run.create_hang_man_object()
                 result = Run.initial_hang_man_details(hang_man_obj)  # Get the details for the start of the game
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
-            if JOIN_CHAT_ROOM_TAG in msg:
-                Chat_Room.new_client(connection)
+            if TAG.JOIN_CHAT_ROOM_TAG in msg:
+                Chat_Room.new_client(connection, user_name)
                 result = "You have joined the chat room"
                 return_msg(connection, result, msg)
 
-            if '[CHAT_ROOM_CREATION]' in msg:
+            if TAG.CREATE_CHAT_ROOM in msg:
                 chat_room_object = Run.create_chat_room_object()
                 result = Run.initial_hang_man_details(chat_room_object)
                 return_msg(connection, result, msg)
                 return
 
-            if SUFFIX_TAG in msg:
+            if TAG.SUFFIX_TAG in msg:
                 result = Run.run_suffix_calculator(msg)  # Result of the calculator
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
-            if HANG_MAN_TAG in msg:
+            if TAG.HANG_MAN_TAG in msg:
                 result = Run.run_hang_man(msg, hang_man_obj)  # pass the msg and the game object
 
                 return_msg(connection, result, msg)  # Pass info to the return msg function
 
-            if CHAT_ROOM_TAG in msg:
+            if TAG.CHAT_ROOM_TAG in msg:
                 Chat_Room.handle_new_message(msg, connection, user_name)
 
-            if EXIT_CHAT_ROOM_TAG in msg:
+            if TAG.EXIT_CHAT_ROOM_TAG in msg:
                 Chat_Room.disconnect_client(connection)
+
+            if TAG.GET_CONNECTED_USERS_TAG in msg:
+                Chat_Room.get_connected_users()
 
     connection.close()  # Close the connection
     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")

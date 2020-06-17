@@ -1,5 +1,6 @@
 from Utility.Polish_Notation import Polish_Notation_Calculator as Polish_Notation
 from Utility.Hang_Man import Hang_Man_Game as Hang_Man
+from Utility import Message_Tags as TAG
 
 
 # Run the Suffix Calculator
@@ -10,7 +11,7 @@ def run_suffix_calculator(msg):
 
     calculator_obj = Polish_Notation.start_computation(user_input)  # Make a new computation object and pass the user_input
 
-    result = "[SUFFIX_CALCULATOR]" + str(calculator_obj.global_result)  # result pulled from a global var in the computation object and converted to string to allow for encoding
+    result = TAG.SUFFIX_TAG + str(calculator_obj.global_result)  # result pulled from a global var in the computation object and converted to string to allow for encoding
 
     return result
 
@@ -43,7 +44,7 @@ def initial_hang_man_details(hang_man_obj):
     max_attempts = hang_man_obj.max_attempts
     word = hang_man_obj.word
 
-    return "[HANG_MAN]" + hidden_word + "//" + str(max_attempts) + "//" + word
+    return TAG.HANG_MAN_TAG + hidden_word + "//" + str(max_attempts) + "//" + word
 
 
 def run_hang_man(msg, hang_man_obj):
@@ -63,7 +64,7 @@ def run_hang_man(msg, hang_man_obj):
     player_attempts = hang_man_obj.player_attempts
     game_completion_state = hang_man_obj.game_completion_state
 
-    return "[HANG_MAN]" + hidden_word + "//" + str(player_attempts) + "//" + game_completion_state
+    return TAG.HANG_MAN_TAG + hidden_word + "//" + str(player_attempts) + "//" + game_completion_state
 
 
 

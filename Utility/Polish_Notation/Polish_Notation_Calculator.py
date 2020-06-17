@@ -4,12 +4,12 @@
 
 from string import digits
 from Utility.Polish_Notation import Polish_Notation_Maths_Functions as myMath
+from Utility import Message_Tags as TAG
 
 # ****
 # Const
 # ****
 VALID_OPERATORS = " x-/+"
-INPUT_ERROR_MSG = '[INPUT_ERROR]'
 
 
 class start_computation:
@@ -55,7 +55,7 @@ def check_input_validity(user_input):
 
     # Check to see if any items contain int and operator
     if all(c in digit_set and VALID_OPERATORS for c in USER_INPUT):
-        global_result = INPUT_ERROR_MSG
+        global_result = TAG.INPUT_ERROR_MSG
         # print(f'{global_result} : is the returned error ')
 
     elif all(c in validSet for c in user_input) and (len(USER_INPUT) > 2) and (len(USER_INPUT) % 2 != 0):
@@ -67,10 +67,10 @@ def check_input_validity(user_input):
             print("Input elements are valid and length is valid")
             pass
         else:
-            global_result = INPUT_ERROR_MSG
+            global_result = TAG.INPUT_ERROR_MSG
 
     else:
-        global_result = INPUT_ERROR_MSG  # If the input is invalid set the global_result to error
+        global_result = TAG.INPUT_ERROR_MSG  # If the input is invalid set the global_result to error
         print(f'{global_result} : is the returned error')
 
 
@@ -125,6 +125,4 @@ if __name__ == '__main__':   # If the module is run on it's own, ask for input
     user_input = input('Enter polish notation equation:  ')
     start_computation(user_input)
 
-
-# Comment to show git change
 

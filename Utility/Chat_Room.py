@@ -2,6 +2,7 @@
 # Imports
 # ****
 
+from Utility import Message_Tags as TAG
 
 # ****
 # Const
@@ -14,9 +15,26 @@ current_chat = []
 
 
 # Add the new client to the clients list
-def new_client(connection):
-    clients.append(connection)
-    print(f'\n[SYSTEM]{connection} has connected')
+def new_client(connection, user_name):
+    clients.append(tuple((connection, user_name)))
+    print(f'\n[SYSTEM]{user_name} has connected. Connection : {connection}')
+    get_connected_users(connection)  # Update the connected users with the new connected users list
+
+
+# Return the connected clients
+def get_connected_users(connection):
+    return_clients = ""
+    for client_socket in clients:
+        return_clients += client_socket[1] + "\\"
+    print(return_clients)
+    return_clients = TAG.GET_CONNECTED_USERS_TAG + return_clients
+    bytes_msg = return_clients.encode()
+    print("Sending connected users")
+    for client_socket in clients:
+        client_socket = client_socket[0]
+        client_socket.send(bytes_msg)
+
+    # connection.send(bytes_msg)
 
 
 # Disconnect a client from the chat room
@@ -31,10 +49,9 @@ def handle_new_message(msg, connection, user_name):
     current_chat.append(msg)  # Debug
     print(f'[CURRENT_CHAT] {current_chat}')
     user = connection  # The senders connection
-    # msg = msg  # Add the senders username to the returning msg
-    msg = "[CHAT_ROOM]" + user_name + "//" + msg
+    msg = TAG.CHAT_ROOM_TAG + user_name + "//" + msg
     for client_socket in clients:
-        #if client_socket != user:
+        client_socket = client_socket[0]
         print(msg)
         bytes_msg = msg.encode()
         print("msg encoded")

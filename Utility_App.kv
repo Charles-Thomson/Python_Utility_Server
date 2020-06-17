@@ -317,6 +317,15 @@ Screen:
                             size: self.texture_size
                             text: app.chat_room_result_text
 
+                    ScrollView:
+                        size_hint: .4, .45
+                        pos_hint: {"x": .7, "top": .75}
+                        Label:
+                            color: 0,0,0,1
+                            size_hint: None, None
+                            size: self.texture_size
+                            text: app.connected_users_result_text
+
 
 
 

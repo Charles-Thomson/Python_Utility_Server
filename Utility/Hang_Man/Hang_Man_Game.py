@@ -4,15 +4,9 @@
 
 
 from random_word import RandomWords
+from Utility import Message_Tags as TAG
 import re
 import sys
-
-# ****
-# Const
-# ****
-
-GAME_WIN_MSG = '[GAME_WIN]'
-GAME_LOSE_MSG = '[GAME_LOSE]'
 
 
 class HangMan:
@@ -88,11 +82,11 @@ def make_guess(user_guess):
 
     if player_attempts == max_attempts:  # If the user takes more then the max number of attempts
         print(f'[LOSE] You have taken to may attempts. The word was - {word}')
-        game_completion_state = GAME_LOSE_MSG
+        game_completion_state = TAG.GAME_LOSE_MSG
 
     elif '*' not in hidden_word:  # If * is not in hidden word all letters have been found
         print(f'[WIN] You have found all the letters in the word - {word}')
-        game_completion_state = GAME_WIN_MSG
+        game_completion_state = TAG.GAME_WIN_MSG
         # sys.exit("Game finished")
 
     elif guess_location == -1:  # If the letter is not in the word
