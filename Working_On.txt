@@ -4,8 +4,6 @@
 
 **** Client ****
 
-- Refactor the handling of incoming messages, use a callback? to call the method handling -
-
 - "Method handling" will take care of the new message and format it based of each util then pass to the "main"
 
 - need handling for username
@@ -30,13 +28,9 @@
 
 - final word on lose is not shown , currently shows hidden word
 
-- Not functioning during refactoring
-
 **** Chat Room ****
 
 - Add a msg when user disconnects
-
-- add command to see connected users
 
 **** UI ****
 
