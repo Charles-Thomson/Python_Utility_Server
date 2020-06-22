@@ -44,7 +44,7 @@ def initial_hang_man_details(hang_man_obj):
     max_attempts = hang_man_obj.max_attempts
     word = hang_man_obj.word
 
-    return TAG.HANG_MAN_TAG + hidden_word + "//" + str(max_attempts) + "//" + word
+    return TAG.HANG_MAN_START_DETAILS_TAG + hidden_word + "//" + str(max_attempts) + "//"
 
 
 def run_hang_man(msg, hang_man_obj):
@@ -64,7 +64,7 @@ def run_hang_man(msg, hang_man_obj):
     player_attempts = hang_man_obj.player_attempts
     game_completion_state = hang_man_obj.game_completion_state
 
-    return TAG.HANG_MAN_TAG + hidden_word + "//" + str(player_attempts) + "//" + game_completion_state
+    return TAG.HANG_MAN_TAG + hidden_word + "//" + str(player_attempts) + "//" + game_completion_state + "//" + user_guess
 
 
 

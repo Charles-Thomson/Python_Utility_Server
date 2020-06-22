@@ -9,24 +9,11 @@ from kivy.properties import StringProperty, ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.theming import ThemeManager, ThemableBehavior
 from kivymd.uix.list import OneLineIconListItem, MDList
-from kivymd.uix.navigationdrawer import NavigationLayout
-
-from Network import Utility_Client
-
-
-Config.set('graphics', 'multisamples', '0')
-
-from kivy.app import App
 from kivymd.app import MDApp
 from Network import Utility_Client as Client, Utility_Client
-
-# ****
-# Kivy Imports
-# ****
-from kivy.lang import Builder
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.screenmanager import ScreenManager, Screen
 from Utility import Message_Tags as TAG
+
+Config.set('graphics', 'multisamples', '0')
 
 kivy.require('1.11.1')
 
@@ -60,13 +47,22 @@ class Utility_App(MDApp):
     user_name_server_result = StringProperty()
     suffix_calculator_server_result = StringProperty()
     hang_man_server_result = StringProperty()
+    hang_man_server_result_attempts = StringProperty()
+    hang_man_server_result_letters = StringProperty()
+    hang_man_server_result_max_attempts = StringProperty()
+    hang_man_server_result_letters = StringProperty()
     chat_room_server_result = StringProperty()
     connected_users_server_result = StringProperty()
 
     user_name = user_name_server_result
 
     suffix_calculator_result_text = suffix_calculator_server_result  # set the result text in the suffix calculator
+
     hang_man_result_text = hang_man_server_result
+    hang_man_attempts_text = hang_man_server_result_attempts
+    hang_man_letters_text = hang_man_server_result_letters
+    hang_man_max_attempts_text = hang_man_server_result_max_attempts
+
     chat_room_result_text = chat_room_server_result
     connected_users_result_text = connected_users_server_result
 
@@ -134,10 +130,25 @@ class Utility_App(MDApp):
         printed_result = "The result :  " + result
         self.suffix_calculator_server_result += printed_result
 
+    def Update_Hang_Man_Start(self, result):
+        result = result.split("//")
+        max_attempts = "Maximum number of attempts" + "\n" + result[1]
+        printed_result = "\nThe word :   " + result[0]
+        attempts_result = "Number of wrong attempts made : " + "\n" + result[1]
+        used_letters = ""
+
+        self.hang_man_server_result_max_attempts = max_attempts
+        self.hang_man_server_result += printed_result
+        self.hang_man_server_result_attempts = attempts_result
+        self.hang_man_server_result_letters = used_letters
+
+
     # Update the Hangman label
     def Update_Hang_Man(self, result):
         result = result.split("//")
-        printed_result = "\nThe word :   " + result[0] + "  number of failed attempts  " + result[1]
+        printed_result = "\nThe word :   " + result[0]
+        attempts_result = "Number of wrong attempts made : " + "\n" + result[1]
+        used_letters = result[3]
 
         if result[2] == '[GAME_WIN]':
             printed_result = "\nCongratulations you won. The word is :  " + result[0]
@@ -145,6 +156,8 @@ class Utility_App(MDApp):
             printed_result = "\nYou lost. The word is :  " + result[0]
 
         self.hang_man_server_result += printed_result
+        self.hang_man_server_result_attempts = attempts_result
+        self.hang_man_server_result_letters += used_letters
 
     # Update the chat label
     def Update_Chat(self, result):
@@ -177,6 +190,10 @@ class Utility_App(MDApp):
             result = result.replace('[HANG_MAN]', '')
             self.Update_Hang_Man(result)
 
+        if TAG.HANG_MAN_START_DETAILS_TAG in result:
+            result = result.replace('[HANG_MAN_START_DETAILS_CREATION]', '')
+            self.Update_Hang_Man_Start(result)
+
         if TAG.CHAT_ROOM_TAG in result:
             result = result.replace('[CHAT_ROOM]', '')
             self.Update_Chat(result)
@@ -184,6 +201,8 @@ class Utility_App(MDApp):
         if TAG.GET_CONNECTED_USERS_TAG in result:
             result = result.replace('[GET_CONNECTED_USERS]', '')
             self.update_connected_users(result)
+
+
 
 
 # Run the application if this file is run

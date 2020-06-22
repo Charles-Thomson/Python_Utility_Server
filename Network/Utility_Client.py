@@ -67,19 +67,6 @@ def send_msg(message):
     else:
         print("Can't send an empty message")
 
-# Check to see if play again - for hang man only currelty
-def play_again_hang_man():
-    replay = input("Do you want to play again? (y/n)  :   ")
-    if replay == "y":
-        message = '[HANG_MAN_CREATION]'
-        send_msg(message)
-        hang_man()
-    if replay == "n":
-        utility_handling()
-    else:
-        print(f'{replay} is not a valid choice')
-        play_again_hang_man()
-
 
 def return_result():
     global RETURNED_RESULT

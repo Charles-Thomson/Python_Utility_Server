@@ -33,10 +33,6 @@ class HangMan:
         generate_word()  # Generate a word
         hide_word(word)  # Hide the generated word using *
 
-        # print(f'[SYSTEM]word :  {word} , Hidden_word : {hidden_word}')
-        # user_guess = input('Start Guessing:   ')   # this is a place holder while the game is refactored
-        # start_guessing(user_guess)
-
 
 # Generate a random word
 def generate_word():

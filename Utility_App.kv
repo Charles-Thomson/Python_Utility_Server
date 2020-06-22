@@ -259,6 +259,44 @@ Screen:
                             size: self.texture_size
                             text: app.hang_man_result_text
 
+                    ScrollView:
+                        size_hint: .45, .25
+                        pos_hint: {"x": .55, "top": .75}
+                        Label:
+                            color: 0,0,0,1
+                            size_hint: None, None
+                            size: self.texture_size
+                            text: app.hang_man_attempts_text
+
+                    ScrollView:
+                        size_hint: .45, .25
+                        pos_hint: {"x": .55, "top": .65}
+                        Label:
+                            color: 0,0,0,1
+                            size_hint: None, None
+                            size: self.texture_size
+                            text: app.hang_man_max_attempts_text
+
+                    ScrollView:
+                        size_hint: .45, .25
+                        pos_hint: {"x": .55, "top": .55}
+                        Label:
+                            color: 0,0,0,1
+                            size_hint: None, None
+                            size: self.texture_size
+                            text: "Letters Used: "
+
+                    ScrollView:
+                        size_hint: .45, .25
+                        pos_hint: {"x": .55, "top": .5}
+                        Label:
+                            color: 0,0,0,1
+                            size_hint: None, None
+                            size: self.texture_size
+                            text: app.hang_man_letters_text
+
+
+
 
 
 
